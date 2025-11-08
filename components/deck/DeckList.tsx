@@ -9,7 +9,7 @@ interface DeckListProps {
   decks: Deck[];
   currentDeckId: string | null;
   onSelectDeck: (deck: Deck) => void;
-  onDeleteDeck: (deckId: string) => void;
+  onDeleteDeck: (deckId: string) => void | Promise<void>;
 }
 
 export const DeckList: React.FC<DeckListProps> = ({

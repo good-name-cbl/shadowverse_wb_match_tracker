@@ -9,7 +9,7 @@ import { CLASSES } from '@/utils/constants';
 import { DeckTemplateSelector } from './DeckTemplateSelector';
 
 interface DeckFormProps {
-  onSubmit: (className: ClassType, deckName: string) => void;
+  onSubmit: (className: ClassType, deckName: string) => void | Promise<void>;
   isLoading?: boolean;
 }
 

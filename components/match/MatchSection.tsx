@@ -17,8 +17,8 @@ interface MatchSectionProps {
     opponentDeckType: string;
     isFirstPlayer: boolean;
     isWin: boolean;
-  }) => void;
-  onDeleteRecord: (recordId: string) => void;
+  }) => void | Promise<void>;
+  onDeleteRecord: (recordId: string) => void | Promise<void>;
   isAddingRecord?: boolean;
 }
 

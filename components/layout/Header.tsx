@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/Button';
+import { DeleteAccountModal } from '@/components/settings/DeleteAccountModal';
 
 interface HeaderProps {
   currentDeck?: { className: string; deckName: string } | null;
@@ -10,6 +11,11 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
   const { user, logout } = useAuth();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <header className="bg-blue-600 text-white shadow-lg">
@@ -32,10 +38,16 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
                 <span className="text-sm hidden sm:block">
                   {user.email}
                 </span>
+                <button
+                  onClick={() => setIsDeleteModalOpen(true)}
+                  className="text-sm text-red-200 hover:text-red-100 underline hidden sm:block"
+                >
+                  アカウント削除
+                </button>
                 <Button
                   variant="secondary"
                   size="sm"
-                  onClick={logout}
+                  onClick={handleLogout}
                 >
                   ログアウト
                 </Button>
@@ -54,6 +66,11 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
           </div>
         )}
       </div>
+
+      <DeleteAccountModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+      />
     </header>
   );
 };

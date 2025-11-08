@@ -16,7 +16,7 @@ interface MatchFormProps {
     opponentDeckType: string;
     isFirstPlayer: boolean;
     isWin: boolean;
-  }) => void;
+  }) => void | Promise<void>;
   isLoading?: boolean;
 }
 

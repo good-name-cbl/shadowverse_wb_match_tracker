@@ -9,7 +9,7 @@ import { MatchHistoryMobile } from './MatchHistoryMobile';
 interface MatchHistoryProps {
   records: MatchRecord[];
   decks: Deck[];
-  onDeleteRecord: (recordId: string) => void;
+  onDeleteRecord: (recordId: string) => void | Promise<void>;
 }
 
 export const MatchHistory: React.FC<MatchHistoryProps> = ({

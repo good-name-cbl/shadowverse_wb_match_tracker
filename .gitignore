@@ -39,3 +39,10 @@ next-env.d.ts
 .amplify
 amplify_outputs*
 amplifyconfiguration*
+
+# local logs
+localhost-*.log
+
+# mcp and serena
+.mcp.json
+.serena/

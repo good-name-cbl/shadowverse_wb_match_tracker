@@ -30,8 +30,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
     try {
       await login(email, password);
-    } catch (error) {
-      setError('ログインに失敗しました');
+    } catch (error: any) {
+      setError(error.message || 'ログインに失敗しました');
     }
   };
 

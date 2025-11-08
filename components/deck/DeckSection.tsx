@@ -8,9 +8,9 @@ import { Deck, ClassType } from '@/types';
 interface DeckSectionProps {
   decks: Deck[];
   currentDeckId: string | null;
-  onAddDeck: (className: ClassType, deckName: string) => void;
+  onAddDeck: (className: ClassType, deckName: string) => void | Promise<void>;
   onSelectDeck: (deck: Deck) => void;
-  onDeleteDeck: (deckId: string) => void;
+  onDeleteDeck: (deckId: string) => void | Promise<void>;
   isAddingDeck?: boolean;
 }
 

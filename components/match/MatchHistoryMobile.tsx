@@ -8,7 +8,7 @@ import { CLASS_COLORS } from '@/utils/constants';
 interface MatchHistoryMobileProps {
   records: MatchRecord[];
   decks: Deck[];
-  onDeleteRecord: (recordId: string) => void;
+  onDeleteRecord: (recordId: string) => void | Promise<void>;
 }
 
 export const MatchHistoryMobile: React.FC<MatchHistoryMobileProps> = ({

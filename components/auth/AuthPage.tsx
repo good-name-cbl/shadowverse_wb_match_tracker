@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LoginForm } from './LoginForm';
 import { SignupForm } from './SignupForm';
 import { ResetPasswordForm } from './ResetPasswordForm';
@@ -8,7 +8,21 @@ import { ResetPasswordForm } from './ResetPasswordForm';
 type AuthMode = 'login' | 'signup' | 'reset';
 
 export const AuthPage: React.FC = () => {
-  const [mode, setMode] = useState<AuthMode>('login');
+  // localStorageからmodeを復元（デフォルトはlogin）
+  const [mode, setMode] = useState<AuthMode>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('authMode');
+      return (saved as AuthMode) || 'login';
+    }
+    return 'login';
+  });
+
+  // modeが変わったらlocalStorageに保存
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('authMode', mode);
+    }
+  }, [mode]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
