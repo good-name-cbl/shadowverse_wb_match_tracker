@@ -38,7 +38,7 @@ next-env.d.ts
 
 # amplify
 .amplify
-amplify_outputs*
+# amplify_outputs* - コメントアウト: 本番デプロイ用にコミット
 amplifyconfiguration*
 
 # local logs
