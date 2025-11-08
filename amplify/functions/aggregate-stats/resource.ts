@@ -5,5 +5,8 @@ export const aggregateStats = defineFunction({
   entry: './handler.ts',
   timeoutSeconds: 300, // 5分
   memoryMB: 512,
-  // package.jsonに定義された依存関係は自動的にバンドルされる
+  bundling: {
+    // AWS SDKはLambdaランタイムに含まれているためバンドルから除外
+    external: ['@aws-sdk/client-dynamodb', '@aws-sdk/lib-dynamodb'],
+  },
 });
