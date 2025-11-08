@@ -70,9 +70,8 @@ const schema = a.schema({
       updatedAt: a.datetime(),
     })
     .authorization((allow) => [
-      allow.guest().to(["read"]), // 未認証ユーザーでも読み取り可
+      allow.publicApiKey().to(["read"]), // 未認証ユーザーでも読み取り可
       allow.authenticated().to(["read"]), // 認証済みユーザーも読み取り可
-      allow.owner(), // Lambda関数（IAM）が更新
     ]),
 });
 
@@ -82,6 +81,9 @@ export const data = defineData({
   schema,
   authorizationModes: {
     defaultAuthorizationMode: "userPool",
+    apiKeyAuthorizationMode: {
+      expiresInDays: 30,
+    },
   },
 });
 
