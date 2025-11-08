@@ -4,6 +4,7 @@ import { data } from './data/resource.js';
 import { aggregateStats } from './functions/aggregate-stats/resource.js';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
 const backend = defineBackend({
   auth,
@@ -11,30 +12,28 @@ const backend = defineBackend({
   aggregateStats,
 });
 
-// Lambda関数にDynamoDBテーブルへのアクセス権を付与
-const { cfnResources } = backend.data;
-const { cfnFunction } = backend.aggregateStats.resources.lambda;
+// DynamoDBテーブルへのアクセス権限をLambda関数に付与
+const lambdaFunction = backend.aggregateStats.resources.lambda;
+const dataResources = backend.data.resources;
 
-// DynamoDBテーブル名を環境変数として設定
-backend.aggregateStats.addEnvironment('MATCH_RECORD_TABLE_NAME', cfnResources.cfnTables['MatchRecord'].tableName || '');
-backend.aggregateStats.addEnvironment('DECK_TABLE_NAME', cfnResources.cfnTables['Deck'].tableName || '');
-backend.aggregateStats.addEnvironment('AGGREGATED_STATS_TABLE_NAME', cfnResources.cfnTables['AggregatedStats'].tableName || '');
+// DynamoDBテーブル名を環境変数として Lambda 関数に設定
+backend.aggregateStats.addEnvironment('MATCH_RECORD_TABLE_NAME', dataResources.tables['MatchRecord'].tableName);
+backend.aggregateStats.addEnvironment('DECK_TABLE_NAME', dataResources.tables['Deck'].tableName);
+backend.aggregateStats.addEnvironment('AGGREGATED_STATS_TABLE_NAME', dataResources.tables['AggregatedStats'].tableName);
 
-// DynamoDBテーブルへの読み取り・書き込み権限を付与
-cfnFunction.addToRolePolicy({
-  effect: 'Allow',
-  actions: [
-    'dynamodb:Scan',
-    'dynamodb:GetItem',
-    'dynamodb:PutItem',
-    'dynamodb:BatchWriteItem',
-  ],
-  resources: [
-    cfnResources.cfnTables['MatchRecord'].attrArn,
-    cfnResources.cfnTables['Deck'].attrArn,
-    cfnResources.cfnTables['AggregatedStats'].attrArn,
-  ],
-});
+// すべてのDynamoDBテーブルに対するScan/GetItem/PutItem/BatchWriteItem権限を付与
+lambdaFunction.addToRolePolicy(
+  new PolicyStatement({
+    actions: [
+      'dynamodb:Scan',
+      'dynamodb:GetItem',
+      'dynamodb:PutItem',
+      'dynamodb:BatchWriteItem',
+      'dynamodb:Query',
+    ],
+    resources: ['*'], // すべてのDynamoDBテーブルにアクセス
+  })
+);
 
 // EventBridge定期実行の設定（毎日UTC 0時 = JST 9時に実行）
 const dailyAggregationRule = new events.Rule(
