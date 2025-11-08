@@ -5,4 +5,5 @@ export const aggregateStats = defineFunction({
   entry: './handler.ts',
   timeoutSeconds: 300, // 5分
   memoryMB: 512,
+  // package.jsonに定義された依存関係は自動的にバンドルされる
 });
