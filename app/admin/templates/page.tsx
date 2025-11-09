@@ -302,7 +302,7 @@ export default function TemplateManagementPage() {
     const seasonName =
       seasons.find((s) => s.id === template.seasonId)?.name || 'Unknown Season';
     if (!acc[seasonName]) {
-      acc[seasonName] = {};
+      acc[seasonName] = {} as Record<ClassType, DeckTemplate[]>;
     }
     if (!acc[seasonName][template.className]) {
       acc[seasonName][template.className] = [];

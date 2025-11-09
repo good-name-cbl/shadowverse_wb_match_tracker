@@ -353,6 +353,7 @@ export default function Home() {
       {showMigrationModal && user && (
         <DataMigrationModal
           userId={user.id}
+          seasonId={currentSeasonId}
           onClose={() => setShowMigrationModal(false)}
           onMigrationComplete={handleMigrationComplete}
         />

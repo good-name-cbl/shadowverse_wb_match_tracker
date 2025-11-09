@@ -80,7 +80,8 @@ export const validateData = (data: LocalStorageData): boolean => {
  */
 export const importDataToDynamoDB = async (
   data: LocalStorageData,
-  userId: string
+  userId: string,
+  seasonId: string
 ): Promise<MigrationResult> => {
   const errors: string[] = [];
   let decksImported = 0;
@@ -122,6 +123,7 @@ export const importDataToDynamoDB = async (
         await client.models.MatchRecord.create({
           userId,
           myDeckId: newDeckId,
+          seasonId,
           opponentClass: record.opponentClass,
           opponentDeckType: record.opponentDeckType,
           isFirstPlayer: record.isFirstPlayer,

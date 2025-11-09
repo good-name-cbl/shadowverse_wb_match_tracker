@@ -14,6 +14,7 @@ import {
 
 interface DataMigrationModalProps {
   userId: string;
+  seasonId: string | null;
   onClose: () => void;
   onMigrationComplete: () => void;
 }
@@ -22,6 +23,7 @@ type MigrationStep = 'check' | 'confirm' | 'importing' | 'complete' | 'error';
 
 export const DataMigrationModal: React.FC<DataMigrationModalProps> = ({
   userId,
+  seasonId,
   onClose,
   onMigrationComplete,
 }) => {
@@ -52,10 +54,16 @@ export const DataMigrationModal: React.FC<DataMigrationModalProps> = ({
   const handleImport = async () => {
     if (!localData) return;
 
+    if (!seasonId) {
+      setErrorMessage('シーズンが選択されていません。');
+      setStep('error');
+      return;
+    }
+
     setStep('importing');
 
     try {
-      const result = await importDataToDynamoDB(localData, userId);
+      const result = await importDataToDynamoDB(localData, userId, seasonId);
       setMigrationResult(result);
 
       if (result.success || result.decksImported > 0 || result.recordsImported > 0) {
