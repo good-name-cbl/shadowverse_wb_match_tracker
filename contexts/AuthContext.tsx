@@ -93,8 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const login = async (email: string, password: string): Promise<void> => {
-    dispatch({ type: 'LOGIN_START' });
-
+    // LOGIN_STARTとLOGIN_FAILUREのdispatchを削除（LoginFormのローカル状態で管理）
     try {
       const { isSignedIn } = await signIn({
         username: email,
@@ -113,7 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error('ログインに失敗しました');
       }
     } catch (error: any) {
-      dispatch({ type: 'LOGIN_FAILURE' });
+      // LOGIN_FAILUREのdispatchを削除（isLoadingを変更しないため）
 
       // エラーログを出力（デバッグ用）
       console.error('Login error:', {

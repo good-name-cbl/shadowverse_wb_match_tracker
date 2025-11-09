@@ -17,7 +17,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login, isLoading } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false); // ローカルのローディング状態
+  const { login } = useAuth();
   const formRef = React.useRef<HTMLDivElement>(null);
 
   // エラー時にフォームの上部にスクロール
@@ -36,11 +37,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       return;
     }
 
+    setIsSubmitting(true);
     try {
       await login(email, password);
     } catch (error: any) {
-      console.error('ログインエラー:', error);
       setError(error.message || 'ログインに失敗しました');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -91,7 +94,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           <Button
             type="submit"
             className="w-full"
-            isLoading={isLoading}
+            isLoading={isSubmitting}
           >
             ログイン
           </Button>
