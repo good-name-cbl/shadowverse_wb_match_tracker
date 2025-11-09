@@ -8,7 +8,7 @@ import { ClassStatsPublic } from '@/components/public-stats/ClassStatsPublic';
 import { DeckStatsPublic } from '@/components/public-stats/DeckStatsPublic';
 import { MatchupMatrix } from '@/components/public-stats/MatchupMatrix';
 import { TurnOrderStats } from '@/components/public-stats/TurnOrderStats';
-import { SeasonFilter } from '@/components/stats/SeasonFilter';
+// import { SeasonFilter } from '@/components/stats/SeasonFilter'; // 一時的に無効化
 
 const client = generateClient<Schema>();
 
@@ -32,7 +32,7 @@ export default function PublicStatsPage() {
   const [statsData, setStatsData] = useState<AggregatedStats[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
-  const [selectedSeasonId, setSelectedSeasonId] = useState<string | null>(null);
+  // const [selectedSeasonId, setSelectedSeasonId] = useState<string | null>(null); // 一時的に無効化
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -78,15 +78,15 @@ export default function PublicStatsPage() {
     }
   };
 
-  // シーズンでフィルタリング
-  const filteredStatsData = selectedSeasonId
-    ? statsData.filter((s) => s.seasonId === selectedSeasonId)
-    : statsData;
+  // シーズンでフィルタリング（一時的に無効化 - 全シーズン表示）
+  // const filteredStatsData = selectedSeasonId
+  //   ? statsData.filter((s) => s.seasonId === selectedSeasonId)
+  //   : statsData;
 
-  const classStats = filteredStatsData.filter((s) => s.statsType === 'class');
-  const deckStats = filteredStatsData.filter((s) => s.statsType === 'deck');
-  const matchupStats = filteredStatsData.filter((s) => s.statsType === 'matchup');
-  const turnOrderStats = filteredStatsData.filter((s) => s.statsType === 'turnOrder');
+  const classStats = statsData.filter((s) => s.statsType === 'class');
+  const deckStats = statsData.filter((s) => s.statsType === 'deck');
+  const matchupStats = statsData.filter((s) => s.statsType === 'matchup');
+  const turnOrderStats = statsData.filter((s) => s.statsType === 'turnOrder');
 
   const tabButtons = [
     { id: 'class' as const, label: 'クラス別統計', icon: '🎴' },
@@ -136,14 +136,14 @@ export default function PublicStatsPage() {
           )}
         </div>
 
-        {/* Season Filter */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        {/* Season Filter - 一時的に無効化 */}
+        {/* <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
           <SeasonFilter
             selectedSeasonId={selectedSeasonId}
             onSeasonChange={setSelectedSeasonId}
             storageKey="publicStatsSeasonId"
           />
-        </div>
+        </div> */}
 
         {error ? (
           <div className="bg-red-50 rounded-lg shadow-sm border border-red-200 p-6">
@@ -159,7 +159,7 @@ export default function PublicStatsPage() {
               再試行
             </button>
           </div>
-        ) : filteredStatsData.length === 0 ? (
+        ) : statsData.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <p className="text-gray-600 text-lg">
               まだ統計データがありません。
