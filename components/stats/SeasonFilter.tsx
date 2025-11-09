@@ -27,7 +27,9 @@ export const SeasonFilter: React.FC<SeasonFilterProps> = ({
     const fetchSeasons = async () => {
       try {
         setIsLoading(true);
-        const { data } = await client.models.Season.list();
+        const { data } = await client.models.Season.list({
+          authMode: 'apiKey',
+        });
         const fetchedSeasons: Season[] = (data || []).map((s) => ({
           id: s.id,
           name: s.name,

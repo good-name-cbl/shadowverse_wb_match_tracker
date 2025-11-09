@@ -27,6 +27,7 @@ const schema = a.schema({
       createdAt: a.datetime().required(),
     })
     .authorization((allow) => [
+      allow.publicApiKey().to(["read"]), // 未認証ユーザーでも読み取り可
       allow.authenticated(), // 全認証ユーザーがCRUD可能（管理権限チェックはフロントエンドで実施）
     ]),
 
