@@ -33,6 +33,7 @@ export default function PublicStatsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const [selectedSeasonId, setSelectedSeasonId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchStats();
@@ -69,6 +70,7 @@ export default function PublicStatsPage() {
       }
     } catch (error) {
       console.error('統計データの取得に失敗しました:', error);
+      setError(error instanceof Error ? error.message : '統計データの取得に失敗しました');
     } finally {
       setIsLoading(false);
     }
@@ -141,7 +143,21 @@ export default function PublicStatsPage() {
           />
         </div>
 
-        {filteredStatsData.length === 0 ? (
+        {error ? (
+          <div className="bg-red-50 rounded-lg shadow-sm border border-red-200 p-6">
+            <h3 className="text-red-800 font-semibold mb-2">エラーが発生しました</h3>
+            <p className="text-red-600">{error}</p>
+            <button
+              onClick={() => {
+                setError(null);
+                fetchStats();
+              }}
+              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            >
+              再試行
+            </button>
+          </div>
+        ) : filteredStatsData.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <p className="text-gray-600 text-lg">
               まだ統計データがありません。
