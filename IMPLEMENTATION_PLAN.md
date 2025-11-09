@@ -1,6 +1,6 @@
 # AWS移行＆全体統計機能 実装計画
 
-**最終更新日**: 2025-11-08 21:30 JST
+**最終更新日**: 2025-11-09 00:45 JST
 
 ---
 
@@ -26,11 +26,11 @@
 | Phase 1 | AWS基盤構築 | ✅ 完了 | 4/4 (100%) |
 | Phase 2 | 認証機能の実装 | ✅ 完了 | 2/2 (100%) |
 | Phase 3 | 個人データのクラウド化 | ✅ 完了 | 2/3 (67%) |
-| Phase 4 | 集計基盤の構築 | ✅ 完了 | 2/3 (67%) |
+| Phase 4 | 集計基盤の構築 | ⚠️ 部分完了 | 2/3 (67%) |
 | Phase 5 | 全体統計機能の実装 | ✅ 完了 | 5/6 (83%) |
-| Phase 6 | デプロイ＆運用 | ⬜ 未着手 | 0/3 |
+| Phase 6 | デプロイ＆運用 | ⚠️ 部分完了 | 1/3 (33%) |
 
-**全体進捗**: 15/21 チケット完了 (71%)
+**全体進捗**: 16/21 チケット完了 (76%)
 
 ---
 
@@ -281,7 +281,7 @@
 ## Phase 4: 集計基盤の構築
 
 ### ✅ チケット #4.1: Lambda集計関数の実装
-- [x] **ステータス**: ✅ 完了
+- [x] **ステータス**: ✅ 実装完了（デプロイは未完了）
 - **目的**: 全ユーザーデータの集計処理
 - **タスク**:
   - [x] DynamoDB全件スキャン
@@ -291,15 +291,15 @@
   - [x] 先攻後攻統計の集計
   - [x] AggregatedStatsテーブルへの保存
 - **新規ファイル**:
-  - `amplify/functions/aggregate-stats/handler.ts`
-  - `amplify/functions/aggregate-stats/resource.ts`
-  - `amplify/functions/aggregate-stats/package.json`
+  - `amplify/functions/aggregate-stats/handler.ts` ⚠️ **現在はgitヒストリーに保存**
+  - `amplify/functions/aggregate-stats/resource.ts` ⚠️ **現在はgitヒストリーに保存**
+  - `amplify/functions/aggregate-stats/package.json` ⚠️ **現在はgitヒストリーに保存**
 - **集計ロジック**:
   - クラス別: クラスごとの使用数、勝数、敗数、勝率
   - デッキ別: デッキ名ごとの使用数、勝数、敗数、勝率
   - マッチアップ: 自分のクラスA vs 相手のクラスB の勝率
   - 先攻後攻: 先攻時の勝率、後攻時の勝率
-- **成果物**: Lambda関数のデプロイ
+- **成果物**: Lambda関数の実装（デプロイは保留）
 - **メモ**:
   - handler.ts に集計ロジックを実装
     - scanAllRecords(): MatchRecordを全件スキャン（ページネーション対応）
@@ -316,22 +316,33 @@
     - DynamoDB Scan/GetItem/PutItem/BatchWriteItem 権限を付与
   - ビルド成功を確認
 
+  **⚠️ デプロイ状況:**
+  - Lambda関数は実装完了したが、Phase 6のデプロイ時に `ampx pipeline-deploy` でAWS SDK bundlingエラーが発生
+  - デプロイを保留し、フロントエンドのみデプロイ戦略に変更
+  - 関数ファイルは削除されたが、gitヒストリーに保存済み（復元可能）
+  - 今後、別の方法でデプロイする予定（AWS CDK直接使用など）
+
 ---
 
 ### ✅ チケット #4.2: EventBridge定期実行の設定
-- [x] **ステータス**: ✅ 完了
+- [x] **ステータス**: ✅ 実装完了（デプロイは未完了）
 - **目的**: 1日1回自動集計
 - **タスク**:
   - [x] EventBridgeルールの作成（cron: 0 0 * * *）
   - [x] Lambda関数のトリガー設定
   - [x] CloudWatch Logsでの監視設定
-- **成果物**: 毎日0時（UTC）に集計が自動実行される
+- **成果物**: 毎日0時（UTC）に集計が自動実行される（実装済み、デプロイは保留）
 - **メモ**:
-  - amplify/backend.ts に EventBridge Rule を追加
+  - amplify/backend.ts に EventBridge Rule を追加（gitヒストリーに保存）
   - スケジュール: 毎日UTC 0時（日本時間9時）に実行
   - Lambda関数をターゲットとして設定
   - CloudWatch Logsは自動的に有効（/aws/lambda/aggregate-stats-<env>）
   - ビルド成功を確認
+
+  **⚠️ デプロイ状況:**
+  - EventBridge設定は amplify/backend.ts に実装済み
+  - Lambda関数と同様、デプロイは保留中（#4.1参照）
+  - Lambda関数のデプロイが完了すれば、EventBridgeも同時にデプロイされる
 
 ---
 
@@ -469,15 +480,62 @@
 ## Phase 6: デプロイ＆運用
 
 ### ✅ チケット #6.1: 本番環境へのデプロイ
-- [ ] **ステータス**: 未着手
+- [x] **ステータス**: ✅ 完了（フロントエンドのみ）
 - **目的**: AWS本番環境での稼働
 - **タスク**:
-  - [ ] Amplify Hostingの設定
-  - [ ] CI/CDパイプラインの構築
-  - [ ] 環境変数の設定
+  - [x] Amplify Hostingの設定
+  - [x] CI/CDパイプラインの構築（フロントエンドのみ）
+  - [x] 環境変数の設定
   - [ ] ドメインの設定（オプション）
-- **成果物**: 本番環境でアプリが稼働
+- **成果物**: 本番環境でアプリが稼働（フロントエンド + サンドボックスバックエンド）
+- **デプロイ戦略**: フロントエンドのみデプロイ（Lambda関数は今後対応）
 - **メモ**:
+  - **完了日**: 2025-11-09
+  - **デプロイ方式**: フロントエンドのみAmplify Hostingにデプロイ、バックエンドはサンドボックス環境を利用
+
+  **【デプロイ経緯】**
+
+  **発生した問題（8回以上のイテレーション）:**
+  1. **GitHub Secret Scanning**: AWS_SETUP_GUIDE.md に実際の認証情報 → プレースホルダーに置き換え
+  2. **TypeScript検証エラー**: 非推奨のAmplify Gen2 API使用 → 最新APIに更新
+  3. **Lambda AWS SDK解決エラー**: bundling時に @aws-sdk モジュールが解決できない
+     - 試行1: bundling.external 設定 → プロパティが存在しない
+     - 試行2: devDependenciesに移動 → 解決せず
+     - 試行3: amplify.ymlでLambda依存関係をインストール → 解決せず
+  4. **CDK Assembly エラー**: manifest.json が生成されない（複数回発生）
+     - backend.ts の簡素化
+     - functions ディレクトリの削除（TypeScriptが検証し続ける）
+  5. **Authorization Mode問題**: allow.guest() にはiam modeが必要 → allow.publicApiKey()に変更
+  6. **CDKバージョン不一致**: aws-cdk: 2.1030.0 vs aws-cdk-lib: 2.220.0 → 両方を2.169.0に統一
+  7. **ampx pipeline-deploy の根本的な問題**: 上記全て解決してもCDK Assemblyエラーが継続
+
+  **最終解決策:**
+  - `amplify.yml` から backend ビルドフェーズを完全削除
+  - `amplify_outputs.json` をリポジトリにコミット（サンドボックスバックエンド設定）
+  - フロントエンドのみをAmplify Hostingにデプロイ
+  - バックエンドはローカルサンドボックスデプロイを継続利用
+
+  **現在のアーキテクチャ:**
+  ```
+  本番フロントエンド (Amplify Hosting)
+    ↓ (amplify_outputs.json経由で接続)
+  サンドボックスバックエンド (ローカルデプロイ)
+    ├─ Cognito (ユーザー認証)
+    ├─ DynamoDB (データストレージ)
+    └─ AppSync (GraphQL API)
+  ```
+
+  **今後の対応が必要な項目:**
+  - Lambda集計関数のデプロイ（gitヒストリーに保存済み）
+  - EventBridge定期実行の設定
+  - バックエンドCI/CDパイプラインの構築（ampx pipeline-deploy以外の方法を検討）
+
+  **デプロイ成果:**
+  - ✅ フロントエンドが本番環境で稼働
+  - ✅ Cognito認証が動作
+  - ✅ DynamoDB データ操作が動作
+  - ✅ 公開統計ページがアクセス可能
+  - ⚠️ Lambda自動集計は未デプロイ（手動でデータ投入すれば統計表示は可能）
 
 ---
 

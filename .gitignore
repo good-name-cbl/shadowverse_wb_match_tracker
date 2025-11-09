@@ -47,3 +47,6 @@ localhost-*.log
 # mcp and serena
 .mcp.json
 .serena/
+
+# lambda deployment
+lambda-deploy/
