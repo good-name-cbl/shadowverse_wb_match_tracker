@@ -168,6 +168,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       dispatch({ type: 'LOGIN_FAILURE' });
 
+      // エラーログを出力（デバッグ用）
+      console.error('Signup error:', {
+        name: error.name,
+        message: error.message,
+        code: error.code,
+      });
+
       if (error.name === 'UsernameExistsException') {
         throw new Error('このメールアドレスは既に登録されています');
       } else if (error.name === 'InvalidPasswordException') {
@@ -195,6 +202,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error('アカウントの確認に失敗しました');
       }
     } catch (error: any) {
+      // エラーログを出力（デバッグ用）
+      console.error('Confirm signup error:', {
+        name: error.name,
+        message: error.message,
+        code: error.code,
+      });
+
       if (error.name === 'CodeMismatchException') {
         throw new Error('確認コードが正しくありません');
       } else if (error.name === 'ExpiredCodeException') {
