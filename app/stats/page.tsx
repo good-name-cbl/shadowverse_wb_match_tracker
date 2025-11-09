@@ -47,18 +47,20 @@ export default function PublicStatsPage() {
       });
 
       if (data) {
-        const stats: AggregatedStats[] = data.map((stat) => ({
-          seasonId: stat.seasonId,
-          seasonName: stat.seasonName,
-          statsType: stat.statsType,
-          statsKey: stat.statsKey,
-          totalGames: stat.totalGames,
-          wins: stat.wins,
-          losses: stat.losses,
-          winRate: stat.winRate,
-          metadata: stat.metadata,
-          updatedAt: stat.updatedAt || undefined,
-        }));
+        const stats: AggregatedStats[] = data
+          .filter((stat) => stat !== null && stat !== undefined)
+          .map((stat) => ({
+            seasonId: stat.seasonId,
+            seasonName: stat.seasonName,
+            statsType: stat.statsType,
+            statsKey: stat.statsKey,
+            totalGames: stat.totalGames,
+            wins: stat.wins,
+            losses: stat.losses,
+            winRate: stat.winRate,
+            metadata: stat.metadata,
+            updatedAt: stat.updatedAt || undefined,
+          }));
 
         setStatsData(stats);
 
