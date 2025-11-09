@@ -42,9 +42,13 @@ export default function PublicStatsPage() {
   const fetchStats = async () => {
     try {
       setIsLoading(true);
+      console.log('[DEBUG] Fetching stats...');
       const { data } = await client.models.AggregatedStats.list({
         authMode: 'apiKey',
       });
+
+      console.log('[DEBUG] Raw data:', data);
+      console.log('[DEBUG] Data length:', data?.length);
 
       if (data) {
         const stats: AggregatedStats[] = data
@@ -62,6 +66,9 @@ export default function PublicStatsPage() {
             updatedAt: stat.updatedAt || undefined,
           }));
 
+        console.log('[DEBUG] Processed stats:', stats);
+        console.log('[DEBUG] Stats length:', stats.length);
+
         setStatsData(stats);
 
         // 最終更新日時を取得
@@ -69,12 +76,15 @@ export default function PublicStatsPage() {
           const date = new Date(stats[0].updatedAt);
           setLastUpdated(date.toLocaleString('ja-JP'));
         }
+      } else {
+        console.log('[DEBUG] No data returned');
       }
     } catch (error) {
       console.error('統計データの取得に失敗しました:', error);
       setError(error instanceof Error ? error.message : '統計データの取得に失敗しました');
     } finally {
       setIsLoading(false);
+      console.log('[DEBUG] Loading finished');
     }
   };
 
@@ -87,6 +97,12 @@ export default function PublicStatsPage() {
   const deckStats = statsData.filter((s) => s.statsType === 'deck');
   const matchupStats = statsData.filter((s) => s.statsType === 'matchup');
   const turnOrderStats = statsData.filter((s) => s.statsType === 'turnOrder');
+
+  console.log('[DEBUG] statsData.length:', statsData.length);
+  console.log('[DEBUG] classStats.length:', classStats.length);
+  console.log('[DEBUG] deckStats.length:', deckStats.length);
+  console.log('[DEBUG] matchupStats.length:', matchupStats.length);
+  console.log('[DEBUG] turnOrderStats.length:', turnOrderStats.length);
 
   const tabButtons = [
     { id: 'class' as const, label: 'クラス別統計', icon: '🎴' },
