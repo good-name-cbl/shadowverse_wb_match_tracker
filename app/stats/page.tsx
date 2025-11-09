@@ -41,7 +41,9 @@ export default function PublicStatsPage() {
   const fetchStats = async () => {
     try {
       setIsLoading(true);
-      const { data } = await client.models.AggregatedStats.list();
+      const { data } = await client.models.AggregatedStats.list({
+        authMode: 'apiKey',
+      });
 
       if (data) {
         const stats: AggregatedStats[] = data.map((stat) => ({
