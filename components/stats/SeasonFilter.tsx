@@ -1,12 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { generateClient } from 'aws-amplify/data';
-import type { Schema } from '@/amplify/data/resource';
 import { Season } from '@/types';
 import { Select } from '@/components/ui/Select';
-
-const client = generateClient<Schema>();
 
 interface SeasonFilterProps {
   selectedSeasonId: string | null; // null = 全シーズン
@@ -27,23 +23,53 @@ export const SeasonFilter: React.FC<SeasonFilterProps> = ({
     const fetchSeasons = async () => {
       try {
         setIsLoading(true);
-        const { data } = await client.models.Season.list({
-          authMode: 'apiKey',
-        });
-        const fetchedSeasons: Season[] = (data || []).map((s) => ({
-          id: s.id,
-          name: s.name,
-          startDate: s.startDate || undefined,
-          endDate: s.endDate || undefined,
-          createdAt: s.createdAt,
-        })).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        setSeasons(fetchedSeasons);
 
-        // 初回ロード時: localStorageから復元、またはデフォルト（最新シーズン）を設定
-        if (!selectedSeasonId) {
-          const savedSeasonId = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
-          const defaultSeasonId = savedSeasonId || (fetchedSeasons[0]?.id || null);
-          onSeasonChange(defaultSeasonId);
+        // 直接fetchでGraphQL APIを呼び出し
+        const response = await fetch('https://df7vocdurnaynkgzi4bnmha3fu.appsync-api.ap-northeast-1.amazonaws.com/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': 'da2-zrtrdmlpkja47kbckvtswef5ya',
+          },
+          body: JSON.stringify({
+            query: `
+              query ListSeasons {
+                listSeasons {
+                  items {
+                    id
+                    name
+                    startDate
+                    endDate
+                    createdAt
+                  }
+                }
+              }
+            `,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (result.data?.listSeasons?.items) {
+          const fetchedSeasons: Season[] = result.data.listSeasons.items
+            .filter((s: any) => s !== null && s !== undefined)
+            .map((s: any) => ({
+              id: s.id,
+              name: s.name,
+              startDate: s.startDate || undefined,
+              endDate: s.endDate || undefined,
+              createdAt: s.createdAt,
+            }))
+            .sort((a: Season, b: Season) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+          setSeasons(fetchedSeasons);
+
+          // 初回ロード時: localStorageから復元、またはデフォルト（最新シーズン）を設定
+          if (!selectedSeasonId) {
+            const savedSeasonId = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
+            const defaultSeasonId = savedSeasonId || (fetchedSeasons[0]?.id || null);
+            onSeasonChange(defaultSeasonId);
+          }
         }
       } catch (err) {
         console.error('シーズンの取得に失敗しました:', err);
