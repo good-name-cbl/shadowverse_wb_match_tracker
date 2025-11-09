@@ -11,6 +11,7 @@ import { DeckTemplateSelector } from '../deck/DeckTemplateSelector';
 
 interface MatchFormProps {
   currentDeck: Deck | null;
+  seasonId?: string | null; // 現在のシーズンID
   onSubmit: (matchData: {
     opponentClass: ClassType;
     opponentDeckType: string;
@@ -22,6 +23,7 @@ interface MatchFormProps {
 
 export const MatchForm: React.FC<MatchFormProps> = ({
   currentDeck,
+  seasonId = null,
   onSubmit,
   isLoading = false,
 }) => {
@@ -141,6 +143,7 @@ export const MatchForm: React.FC<MatchFormProps> = ({
               <div className="mt-2 p-4 border rounded-lg bg-gray-50">
                 <DeckTemplateSelector
                   selectedClass={opponentClass as ClassType}
+                  seasonId={seasonId}
                   onSelectTemplate={handleTemplateSelect}
                   onClose={() => setShowTemplates(false)}
                 />

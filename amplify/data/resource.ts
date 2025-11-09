@@ -4,6 +4,8 @@ import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
  * Shadowverse Worlds Beyond Match Tracker - Data Schema
  *
  * このスキーマは以下のモデルを定義します：
+ * - Season: シーズン情報
+ * - TemplateData: デッキテンプレート
  * - User: ユーザー情報（Cognitoと連携）
  * - Deck: ユーザーが登録したデッキ
  * - MatchRecord: 対戦記録
@@ -11,6 +13,23 @@ import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
  */
 
 const schema = a.schema({
+  /**
+   * Season モデル
+   * シーズン情報（全ユーザー共通）
+   * templatesフィールド: デッキタイプテンプレートの配列をJSON形式で保存
+   */
+  Season: a
+    .model({
+      name: a.string().required(),
+      startDate: a.string(), // 任意: 開始日（YYYY-MM-DD形式）
+      endDate: a.string(), // 任意: 終了日（YYYY-MM-DD形式）
+      templates: a.json(), // デッキタイプテンプレートの配列 (DeckTemplate[])
+      createdAt: a.datetime().required(),
+    })
+    .authorization((allow) => [
+      allow.authenticated(), // 全認証ユーザーがCRUD可能（管理権限チェックはフロントエンドで実施）
+    ]),
+
   /**
    * User モデル
    * Cognitoユーザーと1:1で対応
@@ -43,13 +62,17 @@ const schema = a.schema({
     .model({
       userId: a.id().required(),
       myDeckId: a.id().required(),
+      seasonId: a.id().required(), // シーズンID
       opponentClass: a.string().required(),
       opponentDeckType: a.string().required(),
       isFirstPlayer: a.boolean().required(),
       isWin: a.boolean().required(),
       recordedAt: a.datetime().required(),
     })
-    .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.owner()])
+    .secondaryIndexes((index) => [
+      index("seasonId"), // シーズンでフィルタリングするためのGSI
+    ]),
 
   /**
    * AggregatedStats モデル
@@ -60,6 +83,8 @@ const schema = a.schema({
    */
   AggregatedStats: a
     .model({
+      seasonId: a.id().required(), // シーズンID
+      seasonName: a.string().required(), // シーズン名（表示用）
       statsType: a.string().required(),
       statsKey: a.string().required(),
       totalGames: a.integer().required(),
@@ -72,6 +97,9 @@ const schema = a.schema({
     .authorization((allow) => [
       allow.publicApiKey().to(["read"]), // 未認証ユーザーでも読み取り可
       allow.authenticated().to(["read"]), // 認証済みユーザーも読み取り可
+    ])
+    .secondaryIndexes((index) => [
+      index("seasonId").sortKeys(["statsType", "statsKey"]), // シーズン別の統計を効率的に取得
     ]),
 });
 

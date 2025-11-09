@@ -10,10 +10,11 @@ import { DeckTemplateSelector } from './DeckTemplateSelector';
 
 interface DeckFormProps {
   onSubmit: (className: ClassType, deckName: string) => void | Promise<void>;
+  seasonId?: string | null; // 現在のシーズンID
   isLoading?: boolean;
 }
 
-export const DeckForm: React.FC<DeckFormProps> = ({ onSubmit, isLoading = false }) => {
+export const DeckForm: React.FC<DeckFormProps> = ({ onSubmit, seasonId = null, isLoading = false }) => {
   const [className, setClassName] = useState<ClassType | ''>('');
   const [deckName, setDeckName] = useState('');
   const [error, setError] = useState('');
@@ -86,6 +87,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ onSubmit, isLoading = false 
               <div className="mt-2 p-4 border rounded-lg bg-gray-50">
                 <DeckTemplateSelector
                   selectedClass={className as ClassType}
+                  seasonId={seasonId}
                   onSelectTemplate={handleTemplateSelect}
                   onClose={() => setShowTemplates(false)}
                 />

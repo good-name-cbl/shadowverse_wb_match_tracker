@@ -8,6 +8,7 @@ import { Deck, ClassType } from '@/types';
 interface DeckSectionProps {
   decks: Deck[];
   currentDeckId: string | null;
+  seasonId?: string | null; // 現在のシーズンID
   onAddDeck: (className: ClassType, deckName: string) => void | Promise<void>;
   onSelectDeck: (deck: Deck) => void;
   onDeleteDeck: (deckId: string) => void | Promise<void>;
@@ -17,6 +18,7 @@ interface DeckSectionProps {
 export const DeckSection: React.FC<DeckSectionProps> = ({
   decks,
   currentDeckId,
+  seasonId = null,
   onAddDeck,
   onSelectDeck,
   onDeleteDeck,
@@ -35,6 +37,7 @@ export const DeckSection: React.FC<DeckSectionProps> = ({
 
       <DeckForm
         onSubmit={onAddDeck}
+        seasonId={seasonId}
         isLoading={isAddingDeck}
       />
 

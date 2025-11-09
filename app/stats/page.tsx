@@ -8,10 +8,13 @@ import { ClassStatsPublic } from '@/components/public-stats/ClassStatsPublic';
 import { DeckStatsPublic } from '@/components/public-stats/DeckStatsPublic';
 import { MatchupMatrix } from '@/components/public-stats/MatchupMatrix';
 import { TurnOrderStats } from '@/components/public-stats/TurnOrderStats';
+import { SeasonFilter } from '@/components/stats/SeasonFilter';
 
 const client = generateClient<Schema>();
 
 interface AggregatedStats {
+  seasonId: string;
+  seasonName: string;
   statsType: string;
   statsKey: string;
   totalGames: number;
@@ -29,6 +32,7 @@ export default function PublicStatsPage() {
   const [statsData, setStatsData] = useState<AggregatedStats[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
+  const [selectedSeasonId, setSelectedSeasonId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchStats();
@@ -41,6 +45,8 @@ export default function PublicStatsPage() {
 
       if (data) {
         const stats: AggregatedStats[] = data.map((stat) => ({
+          seasonId: stat.seasonId,
+          seasonName: stat.seasonName,
           statsType: stat.statsType,
           statsKey: stat.statsKey,
           totalGames: stat.totalGames,
@@ -66,10 +72,15 @@ export default function PublicStatsPage() {
     }
   };
 
-  const classStats = statsData.filter((s) => s.statsType === 'class');
-  const deckStats = statsData.filter((s) => s.statsType === 'deck');
-  const matchupStats = statsData.filter((s) => s.statsType === 'matchup');
-  const turnOrderStats = statsData.filter((s) => s.statsType === 'turnOrder');
+  // シーズンでフィルタリング
+  const filteredStatsData = selectedSeasonId
+    ? statsData.filter((s) => s.seasonId === selectedSeasonId)
+    : statsData;
+
+  const classStats = filteredStatsData.filter((s) => s.statsType === 'class');
+  const deckStats = filteredStatsData.filter((s) => s.statsType === 'deck');
+  const matchupStats = filteredStatsData.filter((s) => s.statsType === 'matchup');
+  const turnOrderStats = filteredStatsData.filter((s) => s.statsType === 'turnOrder');
 
   const tabButtons = [
     { id: 'class' as const, label: 'クラス別統計', icon: '🎴' },
@@ -119,7 +130,16 @@ export default function PublicStatsPage() {
           )}
         </div>
 
-        {statsData.length === 0 ? (
+        {/* Season Filter */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+          <SeasonFilter
+            selectedSeasonId={selectedSeasonId}
+            onSeasonChange={setSelectedSeasonId}
+            storageKey="publicStatsSeasonId"
+          />
+        </div>
+
+        {filteredStatsData.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <p className="text-gray-600 text-lg">
               まだ統計データがありません。

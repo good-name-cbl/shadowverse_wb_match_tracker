@@ -56,3 +56,23 @@ export const filterRecordsByDeck = (records: MatchRecord[], deckId: string | nul
   if (!deckId) return records;
   return records.filter(record => record.myDeckId === deckId);
 };
+
+export const filterRecordsBySeason = (records: MatchRecord[], seasonId: string | null): MatchRecord[] => {
+  if (!seasonId) return records;
+  return records.filter(record => record.seasonId === seasonId);
+};
+
+export const filterRecordsByDeckAndSeason = (
+  records: MatchRecord[],
+  deckId: string | null,
+  seasonId: string | null
+): MatchRecord[] => {
+  let filtered = records;
+  if (seasonId) {
+    filtered = filtered.filter(record => record.seasonId === seasonId);
+  }
+  if (deckId) {
+    filtered = filtered.filter(record => record.myDeckId === deckId);
+  }
+  return filtered;
+};

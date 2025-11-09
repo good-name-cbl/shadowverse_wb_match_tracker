@@ -5,12 +5,13 @@ import { OverallStats } from './OverallStats';
 import { ClassStats } from './ClassStats';
 import { DeckTypeStats } from './DeckTypeStats';
 import { DeckFilter } from './DeckFilter';
+import { SeasonFilter } from './SeasonFilter';
 import { MatchRecord, Deck } from '@/types';
 import {
   calculateOverallStats,
   calculateClassStats,
   calculateDeckTypeStats,
-  filterRecordsByDeck,
+  filterRecordsByDeckAndSeason,
 } from '@/utils/statistics';
 
 interface StatsSectionProps {
@@ -20,10 +21,11 @@ interface StatsSectionProps {
 
 export const StatsSection: React.FC<StatsSectionProps> = ({ records, decks }) => {
   const [selectedDeckId, setSelectedDeckId] = useState<string | null>(null);
+  const [selectedSeasonId, setSelectedSeasonId] = useState<string | null>(null);
 
   const filteredRecords = useMemo(
-    () => filterRecordsByDeck(records, selectedDeckId),
-    [records, selectedDeckId]
+    () => filterRecordsByDeckAndSeason(records, selectedDeckId, selectedSeasonId),
+    [records, selectedDeckId, selectedSeasonId]
   );
 
   const overallStats = useMemo(
@@ -52,11 +54,18 @@ export const StatsSection: React.FC<StatsSectionProps> = ({ records, decks }) =>
         </p>
       </div>
 
-      <DeckFilter
-        decks={decks}
-        selectedDeckId={selectedDeckId}
-        onDeckChange={setSelectedDeckId}
-      />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <SeasonFilter
+          selectedSeasonId={selectedSeasonId}
+          onSeasonChange={setSelectedSeasonId}
+          storageKey="personalStatsSeasonId"
+        />
+        <DeckFilter
+          decks={decks}
+          selectedDeckId={selectedDeckId}
+          onDeckChange={setSelectedDeckId}
+        />
+      </div>
 
       <OverallStats stats={overallStats} />
 

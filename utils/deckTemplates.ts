@@ -1,57 +1,75 @@
-import { ClassType } from '@/types';
+import { ClassType, DeckTemplate as DeckTemplateModel } from '@/types';
+import { generateClient } from 'aws-amplify/data';
+import type { Schema } from '@/amplify/data/resource';
 
-export interface DeckTemplate {
-  name: string;
+const client = generateClient<Schema>();
+
+/**
+ * SeasonのtemplatesフィールドからDeckTemplate[]を取得するヘルパー
+ */
+function getTemplatesFromSeason(season: any): DeckTemplateModel[] {
+  if (!season.templates) return [];
+  try {
+    const parsed = typeof season.templates === 'string'
+      ? JSON.parse(season.templates)
+      : season.templates;
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.error('Failed to parse templates:', e);
+    return [];
+  }
 }
 
-export const DECK_TEMPLATES: Record<ClassType, DeckTemplate[]> = {
-  'エルフ': [
-    { name: 'リノエルフ' },
-    { name: 'エズディアエルフ' },
-    { name: 'テンポエルフ' },
-    { name: 'コンボエルフ' },
-    { name: 'ミッドレンジエルフ' }
-  ],
-  'ロイヤル': [
-    { name: '財宝ロイヤル' },
-    { name: 'ミッドレンジロイヤル' },
-    { name: 'アグロロイヤル' },
-    { name: '兵士ロイヤル' },
-    { name: '指揮官ロイヤル' }
-  ],
-  'ウィッチ': [
-    { name: 'スペルウィッチ' },
-    { name: 'ライオウィッチ' },
-    { name: '秘術ウィッチ' },
-    { name: '土の秘術ウィッチ' },
-    { name: 'スペルブーストウィッチ' }
-  ],
-  'ドラゴン': [
-    { name: 'ほーちゃんOTKドラゴン' },
-    { name: '疾走ドラゴン' },
-    { name: 'ランプドラゴン' },
-    { name: 'ミッドレンジドラゴン' },
-    { name: 'ディスカードドラゴン' }
-  ],
-  'ナイトメア': [
-    { name: 'モードナイトメア' },
-    { name: 'ミッドレンジナイトメア' },
-    { name: 'アグロナイトメア' },
-    { name: '復讐ナイトメア' },
-    { name: '自傷ナイトメア' }
-  ],
-  'ビショップ': [
-    { name: 'クレストビショップ' },
-    { name: '疾走ビショップ' },
-    { name: '守護ビショップ' },
-    { name: 'アミュレットビショップ' },
-    { name: '教会ビショップ' }
-  ],
-  'ネメシス': [
-    { name: '人形ネメシス' },
-    { name: 'アーティファクトネメシス' },
-    { name: 'リーシェナネメシス' },
-    { name: '操り人形ネメシス' },
-    { name: 'チェスネメシス' }
-  ]
-};
+/**
+ * データベースから指定シーズン・クラスのアクティブなデッキテンプレートを取得
+ * データがない場合は空配列を返す
+ */
+export async function fetchDeckTemplates(
+  seasonId: string | null,
+  className: ClassType
+): Promise<string[]> {
+  // シーズンIDがない場合は空配列を返す
+  if (!seasonId) {
+    return [];
+  }
+
+  try {
+    // Seasonを取得
+    const { data: seasonData } = await client.models.Season.get({ id: seasonId });
+
+    if (!seasonData) {
+      // Seasonが見つからない場合は空配列を返す
+      return [];
+    }
+
+    // templatesフィールドからDeckTemplate[]を取得
+    const allTemplates = getTemplatesFromSeason(seasonData);
+
+    // 指定されたclassNameでフィルタリングし、isActive: trueのみ
+    const classTemplates = allTemplates.filter(
+      (t) => t.className === className && t.isActive
+    );
+
+    if (classTemplates.length === 0) {
+      // データがない場合は空配列を返す
+      return [];
+    }
+
+    // displayOrderでソート、指定がない場合は名前順
+    const sortedTemplates = [...classTemplates].sort((a, b) => {
+      if (a.displayOrder !== undefined && a.displayOrder !== null &&
+          b.displayOrder !== undefined && b.displayOrder !== null) {
+        return a.displayOrder - b.displayOrder;
+      }
+      if (a.displayOrder !== undefined && a.displayOrder !== null) return -1;
+      if (b.displayOrder !== undefined && b.displayOrder !== null) return 1;
+      return a.deckName.localeCompare(b.deckName);
+    });
+
+    return sortedTemplates.map((t) => t.deckName);
+  } catch (error) {
+    console.error('テンプレートの取得に失敗しました:', error);
+    // エラー時は空配列を返す
+    return [];
+  }
+}

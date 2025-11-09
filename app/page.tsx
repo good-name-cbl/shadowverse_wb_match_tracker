@@ -11,7 +11,7 @@ import { DeckSection } from '@/components/deck/DeckSection';
 import { MatchSection } from '@/components/match/MatchSection';
 import { StatsSection } from '@/components/stats/StatsSection';
 import { DataMigrationModal } from '@/components/migration/DataMigrationModal';
-import { Deck, MatchRecord, ClassType } from '@/types';
+import { Deck, MatchRecord, ClassType, Season } from '@/types';
 import { hasLocalStorageData } from '@/utils/dataMigration';
 
 const client = generateClient<Schema>();
@@ -22,6 +22,8 @@ export default function Home() {
   const { isAuthenticated, user, isLoading: authLoading } = useAuth();
   const [decks, setDecks] = useState<Deck[]>([]);
   const [records, setRecords] = useState<MatchRecord[]>([]);
+  const [seasons, setSeasons] = useState<Season[]>([]);
+  const [currentSeasonId, setCurrentSeasonId] = useState<string | null>(null);
   const [currentDeckId, setCurrentDeckId] = useLocalStorage<string | null>('currentDeckId', null);
   const [activeTab, setActiveTab] = useState<ActiveTab>('decks');
   const [isDataLoading, setIsDataLoading] = useState(true);
@@ -37,6 +39,23 @@ export default function Home() {
     const fetchData = async () => {
       try {
         setIsDataLoading(true);
+
+        // Seasonsを取得
+        const { data: seasonsData } = await client.models.Season.list();
+        const fetchedSeasons: Season[] = (seasonsData || []).map((season) => ({
+          id: season.id,
+          name: season.name,
+          startDate: season.startDate || undefined,
+          endDate: season.endDate || undefined,
+          createdAt: season.createdAt,
+        })).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        setSeasons(fetchedSeasons);
+
+        // 最新シーズンを設定（createdAtが最も新しいもの）
+        const latestSeason = fetchedSeasons[0];
+        if (latestSeason) {
+          setCurrentSeasonId(latestSeason.id);
+        }
 
         // Decksを取得
         const { data: decksData } = await client.models.Deck.list();
@@ -55,6 +74,7 @@ export default function Home() {
           id: record.id,
           userId: record.userId,
           myDeckId: record.myDeckId,
+          seasonId: record.seasonId,
           opponentClass: record.opponentClass as ClassType,
           opponentDeckType: record.opponentDeckType,
           isFirstPlayer: record.isFirstPlayer,
@@ -116,6 +136,7 @@ export default function Home() {
         id: record.id,
         userId: record.userId,
         myDeckId: record.myDeckId,
+        seasonId: record.seasonId,
         opponentClass: record.opponentClass as ClassType,
         opponentDeckType: record.opponentDeckType,
         isFirstPlayer: record.isFirstPlayer,
@@ -222,6 +243,7 @@ export default function Home() {
         id: record.id,
         userId: record.userId,
         myDeckId: record.myDeckId,
+        seasonId: record.seasonId,
         opponentClass: record.opponentClass as ClassType,
         opponentDeckType: record.opponentDeckType,
         isFirstPlayer: record.isFirstPlayer,
@@ -238,7 +260,7 @@ export default function Home() {
     isFirstPlayer: boolean;
     isWin: boolean;
   }) => {
-    if (!currentDeck || !user) return;
+    if (!currentDeck || !user || !currentSeasonId) return;
 
     try {
       // オプティミスティックUI: ローカル状態を先に更新
@@ -248,6 +270,7 @@ export default function Home() {
         id: tempId,
         userId: user.id,
         myDeckId: currentDeck.id,
+        seasonId: currentSeasonId,
         ...matchData,
         recordedAt,
       };
@@ -257,6 +280,7 @@ export default function Home() {
       const { data: newRecord } = await client.models.MatchRecord.create({
         userId: user.id,
         myDeckId: currentDeck.id,
+        seasonId: currentSeasonId,
         opponentClass: matchData.opponentClass,
         opponentDeckType: matchData.opponentDeckType,
         isFirstPlayer: matchData.isFirstPlayer,
@@ -273,6 +297,7 @@ export default function Home() {
                   id: newRecord.id,
                   userId: newRecord.userId,
                   myDeckId: newRecord.myDeckId,
+                  seasonId: newRecord.seasonId,
                   opponentClass: newRecord.opponentClass as ClassType,
                   opponentDeckType: newRecord.opponentDeckType,
                   isFirstPlayer: newRecord.isFirstPlayer,
@@ -306,6 +331,7 @@ export default function Home() {
         id: record.id,
         userId: record.userId,
         myDeckId: record.myDeckId,
+        seasonId: record.seasonId,
         opponentClass: record.opponentClass as ClassType,
         opponentDeckType: record.opponentDeckType,
         isFirstPlayer: record.isFirstPlayer,
@@ -357,6 +383,7 @@ export default function Home() {
           <DeckSection
             decks={decks}
             currentDeckId={currentDeckId}
+            seasonId={currentSeasonId}
             onAddDeck={handleAddDeck}
             onSelectDeck={handleSelectDeck}
             onDeleteDeck={handleDeleteDeck}
@@ -367,6 +394,7 @@ export default function Home() {
           <MatchSection
             currentDeck={currentDeck}
             currentDeckId={currentDeckId}
+            seasonId={currentSeasonId}
             records={records}
             decks={decks}
             onSelectDeck={handleSelectDeckById}

@@ -9,6 +9,7 @@ import { MatchRecord, Deck, ClassType } from '@/types';
 interface MatchSectionProps {
   currentDeck: Deck | null;
   currentDeckId: string | null;
+  seasonId?: string | null; // 現在のシーズンID
   records: MatchRecord[];
   decks: Deck[];
   onSelectDeck: (deckId: string | null) => void;
@@ -25,6 +26,7 @@ interface MatchSectionProps {
 export const MatchSection: React.FC<MatchSectionProps> = ({
   currentDeck,
   currentDeckId,
+  seasonId = null,
   records,
   decks,
   onSelectDeck,
@@ -51,6 +53,7 @@ export const MatchSection: React.FC<MatchSectionProps> = ({
 
       <MatchForm
         currentDeck={currentDeck}
+        seasonId={seasonId}
         onSubmit={onAddRecord}
         isLoading={isAddingRecord}
       />

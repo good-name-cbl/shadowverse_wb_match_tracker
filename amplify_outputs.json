@@ -1,9 +1,9 @@
 {
   "auth": {
-    "user_pool_id": "ap-northeast-1_eq5ZzD6iL",
+    "user_pool_id": "ap-northeast-1_9qw1qpSiX",
     "aws_region": "ap-northeast-1",
-    "user_pool_client_id": "2k1ci3n1mqfph1bj7fjsrjkl1q",
-    "identity_pool_id": "ap-northeast-1:7678e0fa-398b-47ae-9838-e17d256e1d86",
+    "user_pool_client_id": "2ajng13447hhbt8ji7bksbi8oq",
+    "identity_pool_id": "ap-northeast-1:fc8f2e20-45d7-40eb-bdf2-4006eb6b3531",
     "mfa_methods": [],
     "standard_required_attributes": [
       "email"
@@ -26,15 +26,101 @@
     "unauthenticated_identities_enabled": true
   },
   "data": {
-    "url": "https://75t2ryipejfklhiaykstydukoq.appsync-api.ap-northeast-1.amazonaws.com/graphql",
+    "url": "https://df7vocdurnaynkgzi4bnmha3fu.appsync-api.ap-northeast-1.amazonaws.com/graphql",
     "aws_region": "ap-northeast-1",
+    "api_key": "da2-zrtrdmlpkja47kbckvtswef5ya",
     "default_authorization_type": "AMAZON_COGNITO_USER_POOLS",
     "authorization_types": [
+      "API_KEY",
       "AWS_IAM"
     ],
     "model_introspection": {
       "version": 1,
       "models": {
+        "Season": {
+          "name": "Season",
+          "fields": {
+            "id": {
+              "name": "id",
+              "isArray": false,
+              "type": "ID",
+              "isRequired": true,
+              "attributes": []
+            },
+            "name": {
+              "name": "name",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
+            "startDate": {
+              "name": "startDate",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "endDate": {
+              "name": "endDate",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
+            "templates": {
+              "name": "templates",
+              "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": false,
+              "attributes": []
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": true,
+              "attributes": []
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "isArray": false,
+              "type": "AWSDateTime",
+              "isRequired": false,
+              "attributes": [],
+              "isReadOnly": true
+            }
+          },
+          "syncable": true,
+          "pluralName": "Seasons",
+          "attributes": [
+            {
+              "type": "model",
+              "properties": {}
+            },
+            {
+              "type": "auth",
+              "properties": {
+                "rules": [
+                  {
+                    "allow": "private",
+                    "operations": [
+                      "create",
+                      "update",
+                      "delete",
+                      "read"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "primaryKeyInfo": {
+            "isCustomPrimaryKey": false,
+            "primaryKeyFieldName": "id",
+            "sortKeyFieldNames": []
+          }
+        },
         "User": {
           "name": "User",
           "fields": {
@@ -205,6 +291,13 @@
               "isRequired": true,
               "attributes": []
             },
+            "seasonId": {
+              "name": "seasonId",
+              "isArray": false,
+              "type": "ID",
+              "isRequired": true,
+              "attributes": []
+            },
             "opponentClass": {
               "name": "opponentClass",
               "isArray": false,
@@ -265,6 +358,16 @@
               "properties": {}
             },
             {
+              "type": "key",
+              "properties": {
+                "name": "matchRecordsBySeasonId",
+                "queryField": "listMatchRecordBySeasonId",
+                "fields": [
+                  "seasonId"
+                ]
+              }
+            },
+            {
               "type": "auth",
               "properties": {
                 "rules": [
@@ -297,6 +400,20 @@
               "name": "id",
               "isArray": false,
               "type": "ID",
+              "isRequired": true,
+              "attributes": []
+            },
+            "seasonId": {
+              "name": "seasonId",
+              "isArray": false,
+              "type": "ID",
+              "isRequired": true,
+              "attributes": []
+            },
+            "seasonName": {
+              "name": "seasonName",
+              "isArray": false,
+              "type": "String",
               "isRequired": true,
               "attributes": []
             },
@@ -373,12 +490,24 @@
               "properties": {}
             },
             {
+              "type": "key",
+              "properties": {
+                "name": "aggregatedStatsBySeasonIdAndStatsTypeAndStatsKey",
+                "queryField": "listAggregatedStatsBySeasonIdAndStatsTypeAndStatsKey",
+                "fields": [
+                  "seasonId",
+                  "statsType",
+                  "statsKey"
+                ]
+              }
+            },
+            {
               "type": "auth",
               "properties": {
                 "rules": [
                   {
                     "allow": "public",
-                    "provider": "iam",
+                    "provider": "apiKey",
                     "operations": [
                       "read"
                     ]
@@ -386,18 +515,6 @@
                   {
                     "allow": "private",
                     "operations": [
-                      "read"
-                    ]
-                  },
-                  {
-                    "provider": "userPools",
-                    "ownerField": "owner",
-                    "allow": "owner",
-                    "identityClaim": "cognito:username",
-                    "operations": [
-                      "create",
-                      "update",
-                      "delete",
                       "read"
                     ]
                   }

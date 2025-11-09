@@ -7,6 +7,25 @@ export type ClassType =
   | 'ビショップ'
   | 'ネメシス';
 
+export interface Season {
+  id: string;
+  name: string;
+  startDate?: string;
+  endDate?: string;
+  createdAt: string;
+}
+
+export interface DeckTemplate {
+  id: string;
+  seasonId: string;
+  className: ClassType;
+  deckName: string;
+  description?: string;
+  displayOrder?: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -25,6 +44,7 @@ export interface MatchRecord {
   id: string;
   userId: string;
   myDeckId: string;
+  seasonId: string;
   opponentClass: ClassType;
   opponentDeckType: string;
   isFirstPlayer: boolean;

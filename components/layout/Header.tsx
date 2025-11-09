@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { isAdmin } from '@/utils/auth';
 import { Button } from '@/components/ui/Button';
 import { DeleteAccountModal } from '@/components/settings/DeleteAccountModal';
 
@@ -13,6 +14,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
   const { user, logout } = useAuth();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const userIsAdmin = isAdmin(user?.email);
 
   const handleLogout = async () => {
     await logout();
@@ -42,6 +44,26 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
               <span>📈</span>
               <span>全体統計</span>
             </Link>
+
+            {/* 管理画面リンク（管理者のみ） */}
+            {userIsAdmin && (
+              <>
+                <Link
+                  href="/admin/seasons"
+                  className="hidden sm:flex items-center space-x-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 rounded-md transition-colors text-sm font-medium"
+                >
+                  <span>⚙️</span>
+                  <span>シーズン管理</span>
+                </Link>
+                <Link
+                  href="/admin/templates"
+                  className="hidden sm:flex items-center space-x-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 rounded-md transition-colors text-sm font-medium"
+                >
+                  <span>📋</span>
+                  <span>テンプレート管理</span>
+                </Link>
+              </>
+            )}
 
             {user && (
               <>
@@ -75,13 +97,33 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
               </span>
             </div>
           )}
-          <Link
-            href="/stats"
-            className="flex items-center space-x-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 rounded-md transition-colors text-sm font-medium ml-auto"
-          >
-            <span>📈</span>
-            <span>全体統計</span>
-          </Link>
+          <div className="flex items-center space-x-2 ml-auto">
+            <Link
+              href="/stats"
+              className="flex items-center space-x-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 rounded-md transition-colors text-sm font-medium"
+            >
+              <span>📈</span>
+              <span>全体統計</span>
+            </Link>
+            {userIsAdmin && (
+              <>
+                <Link
+                  href="/admin/seasons"
+                  className="flex items-center space-x-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 rounded-md transition-colors text-sm font-medium"
+                >
+                  <span>⚙️</span>
+                  <span>シーズン</span>
+                </Link>
+                <Link
+                  href="/admin/templates"
+                  className="flex items-center space-x-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 rounded-md transition-colors text-sm font-medium"
+                >
+                  <span>📋</span>
+                  <span>テンプレート</span>
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
