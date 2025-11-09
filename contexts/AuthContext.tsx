@@ -115,6 +115,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error: any) {
       dispatch({ type: 'LOGIN_FAILURE' });
 
+      // エラーログを出力（デバッグ用）
+      console.error('Login error:', {
+        name: error.name,
+        message: error.message,
+        code: error.code,
+      });
+
       // エラーメッセージの日本語化
       if (error.name === 'UserNotFoundException' || error.name === 'NotAuthorizedException') {
         throw new Error('メールアドレスまたはパスワードが正しくありません');
