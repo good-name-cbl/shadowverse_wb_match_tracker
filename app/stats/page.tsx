@@ -42,18 +42,45 @@ export default function PublicStatsPage() {
   const fetchStats = async () => {
     try {
       setIsLoading(true);
-      console.log('[DEBUG] Fetching stats...');
-      const { data } = await client.models.AggregatedStats.list({
-        authMode: 'apiKey',
+      console.log('[DEBUG] Fetching stats with direct GraphQL...');
+
+      // 直接fetchでGraphQLクエリを実行
+      const response = await fetch('https://df7vocdurnaynkgzi4bnmha3fu.appsync-api.ap-northeast-1.amazonaws.com/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': 'da2-zrtrdmlpkja47kbckvtswef5ya',
+        },
+        body: JSON.stringify({
+          query: `
+            query ListAggregatedStats {
+              listAggregatedStats {
+                items {
+                  id
+                  seasonId
+                  seasonName
+                  statsType
+                  statsKey
+                  totalGames
+                  wins
+                  losses
+                  winRate
+                  metadata
+                  updatedAt
+                }
+              }
+            }
+          `,
+        }),
       });
 
-      console.log('[DEBUG] Raw data:', data);
-      console.log('[DEBUG] Data length:', data?.length);
+      const result = await response.json();
+      console.log('[DEBUG] GraphQL result:', result);
 
-      if (data) {
-        const stats: AggregatedStats[] = data
-          .filter((stat) => stat !== null && stat !== undefined)
-          .map((stat) => ({
+      if (result.data?.listAggregatedStats?.items) {
+        const stats: AggregatedStats[] = result.data.listAggregatedStats.items
+          .filter((stat: any) => stat !== null && stat !== undefined)
+          .map((stat: any) => ({
             seasonId: stat.seasonId,
             seasonName: stat.seasonName,
             statsType: stat.statsType,
