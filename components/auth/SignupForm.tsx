@@ -58,8 +58,17 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
     if (password.length < 8) {
       return 'パスワードは8文字以上で入力してください';
     }
-    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
-      return 'パスワードは大文字・小文字・数字を含む必要があります';
+    if (!/(?=.*[a-z])/.test(password)) {
+      return 'パスワードには小文字（a-z）を含める必要があります';
+    }
+    if (!/(?=.*[A-Z])/.test(password)) {
+      return 'パスワードには大文字（A-Z）を含める必要があります';
+    }
+    if (!/(?=.*\d)/.test(password)) {
+      return 'パスワードには数字（0-9）を含める必要があります';
+    }
+    if (!/(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/.test(password)) {
+      return 'パスワードには記号（!@#$%など）を含める必要があります';
     }
     return null;
   };
