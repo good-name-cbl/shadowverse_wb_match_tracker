@@ -29,7 +29,7 @@ export const SeasonFilter: React.FC<SeasonFilterProps> = ({
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-api-key': 'da2-zrtrdmlpkja47kbckvtswef5ya',
+            'x-api-key': process.env.NEXT_PUBLIC_APPSYNC_API_KEY || '',
           },
           body: JSON.stringify({
             query: `

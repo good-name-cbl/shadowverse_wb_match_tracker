@@ -12,6 +12,26 @@ This template equips you with a foundational Next.js application integrated with
 - **API**: Ready-to-use GraphQL endpoint with AWS AppSync.
 - **Database**: Real-time database powered by Amazon DynamoDB.
 
+## Environment Variables
+
+This application requires the following environment variables:
+
+1. Copy `.env.local.example` to `.env.local`:
+   ```bash
+   cp .env.local.example .env.local
+   ```
+
+2. Update the API key in `.env.local`:
+   ```
+   NEXT_PUBLIC_APPSYNC_API_KEY=your_api_key_here
+   ```
+
+   You can find your API key in:
+   - AWS AppSync Console
+   - `amplify_outputs.json` (after running `npx ampx sandbox` or `npx ampx deploy`)
+
+**Important**: Never commit `.env.local` to version control. It is already included in `.gitignore`.
+
 ## Deploying to AWS
 
 For detailed instructions on deploying your application, refer to the [deployment section](https://docs.amplify.aws/nextjs/start/quickstart/nextjs-app-router-client-components/#deploy-a-fullstack-app-to-aws) of our documentation.

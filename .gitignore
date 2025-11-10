@@ -50,3 +50,7 @@ localhost-*.log
 
 # lambda deployment
 lambda-deploy/
+# Debug and test files
+*.log
+test-outputs/
+amplify/graphql/
