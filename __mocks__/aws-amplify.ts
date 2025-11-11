@@ -1,0 +1,65 @@
+// Mock for AWS Amplify
+export const Amplify = {
+  configure: jest.fn(),
+}
+
+export const generateClient = jest.fn(() => ({
+  models: {
+    User: {
+      create: jest.fn(),
+      get: jest.fn(),
+      list: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      observeQuery: jest.fn(),
+      onCreate: jest.fn(),
+      onUpdate: jest.fn(),
+      onDelete: jest.fn(),
+    },
+    Deck: {
+      create: jest.fn(),
+      get: jest.fn(),
+      list: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      observeQuery: jest.fn(),
+      onCreate: jest.fn(),
+      onUpdate: jest.fn(),
+      onDelete: jest.fn(),
+    },
+    MatchRecord: {
+      create: jest.fn(),
+      get: jest.fn(),
+      list: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      observeQuery: jest.fn(),
+      onCreate: jest.fn(),
+      onUpdate: jest.fn(),
+      onDelete: jest.fn(),
+    },
+    Season: {
+      create: jest.fn(),
+      get: jest.fn(),
+      list: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      observeQuery: jest.fn(),
+      onCreate: jest.fn(),
+      onUpdate: jest.fn(),
+      onDelete: jest.fn(),
+    },
+    AggregatedStats: {
+      create: jest.fn(),
+      get: jest.fn(),
+      list: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      observeQuery: jest.fn(),
+      onCreate: jest.fn(),
+      onUpdate: jest.fn(),
+      onDelete: jest.fn(),
+    },
+  },
+  graphql: jest.fn(),
+}))

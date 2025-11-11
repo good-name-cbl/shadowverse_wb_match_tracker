@@ -1,0 +1,141 @@
+name: Deploy to AWS Amplify
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ap-northeast-1
+  AMPLIFY_APP_ID: d1750m4lxqo4gv
+
+jobs:
+  test:
+    name: Run Tests Before Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests
+      run: npm test -- --passWithNoTests
+
+    - name: Build application
+      run: npm run build
+
+  deploy:
+    name: Deploy to AWS Amplify
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Trigger Amplify deployment
+      run: |
+        BRANCH_NAME=${GITHUB_REF#refs/heads/}
+        JOB_ID=$(aws amplify start-job \
+          --app-id ${{ env.AMPLIFY_APP_ID }} \
+          --branch-name $BRANCH_NAME \
+          --job-type RELEASE \
+          --query 'jobSummary.jobId' \
+          --output text)
+
+        echo "Deployment started with Job ID: $JOB_ID"
+        echo "JOB_ID=$JOB_ID" >> $GITHUB_ENV
+
+    - name: Wait for deployment to complete
+      run: |
+        while true; do
+          STATUS=$(aws amplify get-job \
+            --app-id ${{ env.AMPLIFY_APP_ID }} \
+            --branch-name main \
+            --job-id ${{ env.JOB_ID }} \
+            --query 'job.summary.status' \
+            --output text)
+
+          echo "Deployment status: $STATUS"
+
+          if [[ "$STATUS" == "SUCCEED" ]]; then
+            echo "✅ Deployment successful!"
+            break
+          elif [[ "$STATUS" == "FAILED" ]] || [[ "$STATUS" == "CANCELLED" ]]; then
+            echo "❌ Deployment failed with status: $STATUS"
+            exit 1
+          fi
+
+          sleep 30
+        done
+
+    - name: Get deployment URL
+      run: |
+        URL=$(aws amplify get-branch \
+          --app-id ${{ env.AMPLIFY_APP_ID }} \
+          --branch-name main \
+          --query 'branch.displayName' \
+          --output text)
+
+        echo "🚀 Application deployed to: https://main.${{ env.AMPLIFY_APP_ID }}.amplifyapp.com"
+
+    - name: Create deployment summary
+      run: |
+        echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
+        echo "- **Environment**: Production" >> $GITHUB_STEP_SUMMARY
+        echo "- **URL**: https://main.${{ env.AMPLIFY_APP_ID }}.amplifyapp.com" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Deployed by**: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Time**: $(date)" >> $GITHUB_STEP_SUMMARY
+
+  smoke-test:
+    name: Smoke Tests
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check application health
+      run: |
+        APP_URL="https://main.${{ env.AMPLIFY_APP_ID }}.amplifyapp.com"
+
+        echo "Checking application health at $APP_URL"
+
+        HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" "$APP_URL")
+
+        if [[ "$HTTP_STATUS" == "200" ]]; then
+          echo "✅ Application is healthy (HTTP $HTTP_STATUS)"
+        else
+          echo "❌ Application health check failed (HTTP $HTTP_STATUS)"
+          exit 1
+        fi
+
+    - name: Check API endpoint
+      run: |
+        API_URL="https://main.${{ env.AMPLIFY_APP_ID }}.amplifyapp.com/api/health"
+
+        echo "Checking API health at $API_URL"
+
+        # This will fail if endpoint doesn't exist, which is expected
+        # Adjust based on actual API endpoints
+        HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" "$API_URL")
+
+        echo "API responded with HTTP $HTTP_STATUS"

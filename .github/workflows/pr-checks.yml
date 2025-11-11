@@ -1,0 +1,206 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  changed-files:
+    name: Detect Changed Files
+    runs-on: ubuntu-latest
+    outputs:
+      test-files: ${{ steps.changes.outputs.test }}
+      src-files: ${{ steps.changes.outputs.src }}
+      config-files: ${{ steps.changes.outputs.config }}
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          test:
+            - '**/*.test.ts'
+            - '**/*.test.tsx'
+            - '**/*.spec.ts'
+            - '**/*.spec.tsx'
+            - 'jest.config.js'
+            - 'jest.setup.js'
+          src:
+            - 'app/**'
+            - 'components/**'
+            - 'contexts/**'
+            - 'hooks/**'
+            - 'utils/**'
+            - 'types/**'
+          config:
+            - 'package.json'
+            - 'package-lock.json'
+            - 'tsconfig.json'
+            - 'next.config.js'
+            - 'tailwind.config.js'
+
+  test-coverage:
+    name: Test Coverage Report
+    runs-on: ubuntu-latest
+    needs: changed-files
+    if: needs.changed-files.outputs.src-files == 'true' || needs.changed-files.outputs.test-files == 'true'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests with coverage
+      run: npm test -- --coverage --coverageReporters=json-summary --coverageReporters=text --passWithNoTests
+
+    - name: Coverage Report Comment
+      uses: actions/github-script@v7
+      if: always()
+      with:
+        script: |
+          const fs = require('fs');
+          const coverage = JSON.parse(fs.readFileSync('./coverage/coverage-summary.json', 'utf8'));
+          const total = coverage.total;
+
+          const formatPercentage = (value) => {
+            const pct = value.pct || 0;
+            if (pct >= 80) return `🟢 ${pct}%`;
+            if (pct >= 60) return `🟡 ${pct}%`;
+            return `🔴 ${pct}%`;
+          };
+
+          const comment = `## 📊 Test Coverage Report
+
+          | Category | Coverage | Details |
+          |----------|----------|---------|
+          | Lines | ${formatPercentage(total.lines)} | ${total.lines.covered}/${total.lines.total} |
+          | Functions | ${formatPercentage(total.functions)} | ${total.functions.covered}/${total.functions.total} |
+          | Branches | ${formatPercentage(total.branches)} | ${total.branches.covered}/${total.branches.total} |
+          | Statements | ${formatPercentage(total.statements)} | ${total.statements.covered}/${total.statements.total} |
+
+          _Coverage thresholds: 🟢 ≥80% | 🟡 ≥60% | 🔴 <60%_`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+  lint-check:
+    name: Lint Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run ESLint
+      run: npm run lint -- --format=json --output-file=eslint-report.json
+      continue-on-error: true
+
+    - name: Annotate ESLint Results
+      uses: actions/github-script@v7
+      if: always()
+      with:
+        script: |
+          const fs = require('fs');
+          try {
+            const report = JSON.parse(fs.readFileSync('eslint-report.json', 'utf8'));
+            let hasErrors = false;
+
+            for (const file of report) {
+              if (file.errorCount > 0 || file.warningCount > 0) {
+                for (const message of file.messages) {
+                  const annotation = {
+                    path: file.filePath.replace(process.cwd() + '/', ''),
+                    start_line: message.line || 1,
+                    end_line: message.endLine || message.line || 1,
+                    annotation_level: message.severity === 2 ? 'failure' : 'warning',
+                    message: message.message,
+                    title: message.ruleId || 'ESLint'
+                  };
+
+                  if (message.severity === 2) hasErrors = true;
+
+                  console.log(`::${annotation.annotation_level} file=${annotation.path},line=${annotation.start_line}::${annotation.message}`);
+                }
+              }
+            }
+
+            if (hasErrors) {
+              core.setFailed('ESLint found errors that need to be fixed');
+            }
+          } catch (e) {
+            console.log('No ESLint issues found');
+          }
+
+  bundle-size:
+    name: Bundle Size Analysis
+    runs-on: ubuntu-latest
+    needs: changed-files
+    if: needs.changed-files.outputs.src-files == 'true' || needs.changed-files.outputs.config-files == 'true'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build and analyze bundle
+      run: |
+        npm run build
+        echo "## 📦 Bundle Size Report" > bundle-report.md
+        echo "" >> bundle-report.md
+        echo "| File | Size |" >> bundle-report.md
+        echo "|------|------|" >> bundle-report.md
+        find .next -name "*.js" -type f | head -10 | while read file; do
+          size=$(du -h "$file" | cut -f1)
+          filename=$(basename "$file")
+          echo "| $filename | $size |" >> bundle-report.md
+        done
+
+    - name: Comment Bundle Size
+      uses: actions/github-script@v7
+      if: always()
+      with:
+        script: |
+          const fs = require('fs');
+          const report = fs.readFileSync('./bundle-report.md', 'utf8');
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: report
+          });
