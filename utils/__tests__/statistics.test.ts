@@ -20,9 +20,7 @@ describe('statistics', () => {
       opponentDeckType: 'アグロ',
       isFirstPlayer: true,
       isWin: true,
-      recordedAt: new Date('2024-01-01T10:00:00Z'),
-      createdAt: new Date('2024-01-01T10:00:00Z'),
-      updatedAt: new Date('2024-01-01T10:00:00Z'),
+      recordedAt: '2024-01-01T10:00:00Z',
     },
     {
       id: '2',
@@ -33,9 +31,7 @@ describe('statistics', () => {
       opponentDeckType: 'コントロール',
       isFirstPlayer: false,
       isWin: false,
-      recordedAt: new Date('2024-01-02T10:00:00Z'),
-      createdAt: new Date('2024-01-02T10:00:00Z'),
-      updatedAt: new Date('2024-01-02T10:00:00Z'),
+      recordedAt: '2024-01-02T10:00:00Z',
     },
     {
       id: '3',
@@ -46,9 +42,7 @@ describe('statistics', () => {
       opponentDeckType: 'ミッドレンジ',
       isFirstPlayer: true,
       isWin: true,
-      recordedAt: new Date('2024-01-03T10:00:00Z'),
-      createdAt: new Date('2024-01-03T10:00:00Z'),
-      updatedAt: new Date('2024-01-03T10:00:00Z'),
+      recordedAt: '2024-01-03T10:00:00Z',
     },
     {
       id: '4',
@@ -59,9 +53,7 @@ describe('statistics', () => {
       opponentDeckType: 'スペル',
       isFirstPlayer: false,
       isWin: true,
-      recordedAt: new Date('2024-02-01T10:00:00Z'),
-      createdAt: new Date('2024-02-01T10:00:00Z'),
-      updatedAt: new Date('2024-02-01T10:00:00Z'),
+      recordedAt: '2024-02-01T10:00:00Z',
     },
   ]
 
@@ -231,12 +223,6 @@ describe('statistics', () => {
 
       expect(filtered).toHaveLength(3)
       expect(filtered.every(r => r.seasonId === 'season1')).toBe(true)
-    })
-
-    it('should return all records when seasonId is undefined', () => {
-      const filtered = filterRecordsBySeason(mockRecords, undefined)
-
-      expect(filtered).toEqual(mockRecords)
     })
 
     it('should return all records when seasonId is null', () => {

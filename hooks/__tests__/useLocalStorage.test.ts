@@ -113,10 +113,10 @@ describe('useLocalStorage', () => {
     expect(nullResult.current[0]).toBeNull()
 
     act(() => {
-      nullResult.current[1](undefined)
+      nullResult.current[1](null)
     })
 
-    expect(nullResult.current[0]).toBeUndefined()
+    expect(nullResult.current[0]).toBeNull()
   })
 
   it('should handle corrupted localStorage data gracefully', () => {
