@@ -368,8 +368,8 @@ export default function Home() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex-1 flex flex-col items-center justify-center px-2 py-3 text-xs sm:text-sm font-medium rounded-lg transition-all duration-200 ${activeTab === tab.id
-                      ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/25'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                    ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg shadow-violet-900/20'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                     }`}
                 >
                   <span className="text-xl sm:text-lg mb-1">{tab.icon}</span>

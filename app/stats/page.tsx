@@ -140,23 +140,25 @@ export default function PublicStatsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">統計データを読み込み中...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-500 mx-auto mb-4"></div>
+          <p className="text-slate-400">統計データを読み込み中...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950">
       {/* Header */}
-      <header className="bg-blue-600 text-white shadow-lg">
+      <header className="glass border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <h1 className="text-xl font-bold">シャドウバース 全体統計</h1>
-            <Link href="/" className="text-sm hover:text-blue-200">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+              シャドウバース 全体統計
+            </h1>
+            <Link href="/" className="text-sm text-slate-400 hover:text-violet-400 transition-colors">
               ホームに戻る
             </Link>
           </div>
@@ -165,22 +167,22 @@ export default function PublicStatsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Info Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        <div className="glass rounded-xl border border-white/5 p-6 mb-6">
+          <h2 className="text-2xl font-bold text-slate-100 mb-2">
             📈 全ユーザー統計
           </h2>
-          <p className="text-gray-600 mb-4">
+          <p className="text-slate-400 mb-4">
             すべてのユーザーの対戦データを集計した統計情報です。
           </p>
           {lastUpdated && (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-slate-500">
               最終更新: {lastUpdated}
             </p>
           )}
         </div>
 
         {/* Season Filter */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div className="glass rounded-xl border border-white/5 p-4 mb-6">
           <SeasonFilter
             selectedSeasonId={selectedSeasonId}
             onSeasonChange={setSelectedSeasonId}
@@ -189,41 +191,41 @@ export default function PublicStatsPage() {
         </div>
 
         {error ? (
-          <div className="bg-red-50 rounded-lg shadow-sm border border-red-200 p-6">
-            <h3 className="text-red-800 font-semibold mb-2">エラーが発生しました</h3>
-            <p className="text-red-600">{error}</p>
+          <div className="glass rounded-xl border border-red-500/20 p-6">
+            <h3 className="text-red-400 font-semibold mb-2">エラーが発生しました</h3>
+            <p className="text-red-300">{error}</p>
             <button
               onClick={() => {
                 setError(null);
                 fetchStats();
               }}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              className="mt-4 px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:from-red-500 hover:to-red-400 transition-all"
             >
               再試行
             </button>
           </div>
         ) : statsData.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-            <p className="text-gray-600 text-lg">
+          <div className="glass rounded-xl border border-white/5 p-12 text-center">
+            <p className="text-slate-300 text-lg">
               まだ統計データがありません。
             </p>
-            <p className="text-gray-500 text-sm mt-2">
+            <p className="text-slate-500 text-sm mt-2">
               対戦データが登録されると、ここに統計情報が表示されます。
             </p>
           </div>
         ) : (
           <>
             {/* Tab Navigation */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-1 mb-6">
+            <div className="glass rounded-xl p-1 border border-white/5 mb-6">
               <nav className="flex space-x-1">
                 {tabButtons.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 flex flex-col items-center justify-center px-2 py-3 text-xs sm:text-sm font-medium rounded-md transition-colors ${
+                    className={`flex-1 flex flex-col items-center justify-center px-2 py-3 text-xs sm:text-sm font-medium rounded-lg transition-all duration-200 ${
                       activeTab === tab.id
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                        ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg shadow-violet-900/20'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                     }`}
                   >
                     <span className="text-xl sm:text-lg mb-1">{tab.icon}</span>

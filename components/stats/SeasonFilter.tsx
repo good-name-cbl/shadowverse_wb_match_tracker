@@ -96,7 +96,7 @@ export const SeasonFilter: React.FC<SeasonFilterProps> = ({
 
   if (isLoading) {
     return (
-      <div className="text-sm text-gray-600">
+      <div className="text-sm text-slate-400">
         シーズン読み込み中...
       </div>
     );
