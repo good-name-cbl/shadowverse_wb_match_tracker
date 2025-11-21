@@ -29,11 +29,11 @@ export const DeckSelector: React.FC<DeckSelectorProps> = ({
 
   if (decks.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="glass-card rounded-xl p-8 text-center">
+        <h3 className="text-lg font-semibold text-slate-200 mb-4">
           使用デッキの選択
         </h3>
-        <div className="text-center py-8 text-gray-500">
+        <div className="py-8 text-slate-400">
           デッキが登録されていません。<br />
           まず「デッキ管理」でデッキを登録してください。
         </div>
@@ -42,8 +42,9 @@ export const DeckSelector: React.FC<DeckSelectorProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">
+    <div className="glass-card rounded-xl p-6">
+      <h3 className="text-lg font-semibold text-slate-200 mb-6 flex items-center">
+        <span className="mr-2">🎮</span>
         使用デッキの選択
       </h3>
 
@@ -70,16 +71,17 @@ export const DeckSelector: React.FC<DeckSelectorProps> = ({
         </div>
 
         {currentDeck && (
-          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="flex items-center space-x-3">
+          <div className="p-4 bg-violet-500/10 rounded-xl border border-violet-500/20 backdrop-blur-sm">
+            <div className="flex items-center space-x-4">
               <div
-                className={`w-4 h-4 rounded-full ${CLASS_COLORS[currentDeck.className]}`}
+                className={`w-4 h-4 rounded-full shadow-[0_0_8px_currentColor] ${CLASS_COLORS[currentDeck.className].replace('bg-', 'text-').replace('text-white', '')}`}
+                style={{ backgroundColor: 'currentColor' }}
               />
               <div>
-                <div className="font-medium text-blue-900">
+                <div className="font-medium text-violet-200">
                   選択中: {currentDeck.deckName}
                 </div>
-                <div className="text-sm text-blue-700">
+                <div className="text-sm text-violet-300/70">
                   {currentDeck.className}
                 </div>
               </div>
@@ -88,9 +90,10 @@ export const DeckSelector: React.FC<DeckSelectorProps> = ({
         )}
 
         {!currentDeck && (
-          <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-            <div className="text-yellow-800 text-sm">
-              ⚠️ 対戦記録を行うには、使用デッキを選択してください
+          <div className="p-4 bg-yellow-500/10 rounded-xl border border-yellow-500/20 backdrop-blur-sm">
+            <div className="text-yellow-200/90 text-sm flex items-center">
+              <span className="mr-2">⚠️</span>
+              対戦記録を行うには、使用デッキを選択してください
             </div>
           </div>
         )}

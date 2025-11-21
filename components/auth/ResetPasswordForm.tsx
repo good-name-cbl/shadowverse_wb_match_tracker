@@ -79,17 +79,17 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
   if (isSuccess) {
     return (
       <div className="w-full max-w-md mx-auto">
-        <div className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+        <div className="glass-card rounded-xl px-8 pt-6 pb-8 mb-4">
+          <h2 className="text-2xl font-bold text-center text-slate-100 mb-6">
             パスワード変更完了
           </h2>
 
           <div className="text-center space-y-4">
-            <div className="text-green-600">
+            <div className="text-green-400">
               パスワードの変更が完了しました。
             </div>
 
-            <div className="text-gray-600 text-sm">
+            <div className="text-slate-400 text-sm">
               新しいパスワードでログインしてください。
             </div>
 
@@ -108,13 +108,13 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
   if (step === 'confirm') {
     return (
       <div className="w-full max-w-md mx-auto">
-        <div className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+        <div className="glass-card rounded-xl px-8 pt-6 pb-8 mb-4">
+          <h2 className="text-2xl font-bold text-center text-slate-100 mb-6">
             新しいパスワードを設定
           </h2>
 
           <form onSubmit={handleConfirmReset} className="space-y-4">
-            <div className="bg-blue-50 border border-blue-200 text-blue-800 text-sm p-3 rounded">
+            <div className="bg-blue-500/10 border border-blue-500/20 text-blue-300 text-sm p-3 rounded-lg">
               メールに送信された確認コードと新しいパスワードを入力してください。
             </div>
 
@@ -146,7 +146,7 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
             />
 
             {error && (
-              <div className="text-red-600 text-sm text-center">
+              <div className="text-red-400 text-sm text-center bg-red-500/10 border border-red-500/20 p-2 rounded-lg">
                 {error}
               </div>
             )}
@@ -164,7 +164,7 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
             <button
               type="button"
               onClick={onSwitchToLogin}
-              className="text-blue-600 hover:text-blue-800 text-sm"
+              className="text-violet-400 hover:text-violet-300 text-sm transition-colors"
             >
               ログイン画面に戻る
             </button>
@@ -176,8 +176,8 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <div className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+      <div className="glass-card rounded-xl px-8 pt-6 pb-8 mb-4">
+        <h2 className="text-2xl font-bold text-center text-slate-100 mb-6">
           パスワードリセット
         </h2>
 
@@ -191,12 +191,12 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
             required
           />
 
-          <div className="text-gray-600 text-sm">
+          <div className="text-slate-400 text-sm">
             登録されたメールアドレスにパスワードリセット用の確認コードを送信します。
           </div>
 
           {error && (
-            <div className="text-red-600 text-sm text-center">
+            <div className="text-red-400 text-sm text-center bg-red-500/10 border border-red-500/20 p-2 rounded-lg">
               {error}
             </div>
           )}
@@ -214,7 +214,7 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
           <button
             type="button"
             onClick={onSwitchToLogin}
-            className="text-blue-600 hover:text-blue-800 text-sm"
+            className="text-violet-400 hover:text-violet-300 text-sm transition-colors"
           >
             ログイン画面に戻る
           </button>

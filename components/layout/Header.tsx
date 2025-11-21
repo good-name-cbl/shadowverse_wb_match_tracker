@@ -21,15 +21,20 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
   };
 
   return (
-    <header className="bg-blue-600 text-white shadow-lg">
+    <header className="sticky top-0 z-50 glass border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-4">
-            <h1 className="text-xl font-bold">シャドウバース対戦記録</h1>
+            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400">
+              Shadowverse Record
+            </h1>
             {currentDeck && (
-              <div className="hidden sm:block bg-blue-700 px-3 py-1 rounded-md">
-                <span className="text-sm">
-                  使用中: {currentDeck.className} - {currentDeck.deckName}
+              <div className="hidden sm:block bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full backdrop-blur-sm">
+                <span className="text-sm text-slate-300">
+                  <span className="text-slate-500 mr-2">使用中</span>
+                  <span className="font-medium text-violet-300">{currentDeck.className}</span>
+                  <span className="mx-2 text-slate-600">|</span>
+                  <span className="text-slate-200">{currentDeck.deckName}</span>
                 </span>
               </div>
             )}
@@ -39,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
             {/* 全体統計リンク */}
             <Link
               href="/stats"
-              className="hidden sm:flex items-center space-x-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 rounded-md transition-colors text-sm font-medium"
+              className="hidden sm:flex items-center space-x-1 px-3 py-1.5 text-slate-400 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-all duration-200 text-sm font-medium"
             >
               <span>📈</span>
               <span>全体統計</span>
@@ -50,14 +55,14 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
               <>
                 <Link
                   href="/admin/seasons"
-                  className="hidden sm:flex items-center space-x-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 rounded-md transition-colors text-sm font-medium"
+                  className="hidden sm:flex items-center space-x-1 px-3 py-1.5 text-slate-400 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-all duration-200 text-sm font-medium"
                 >
                   <span>⚙️</span>
                   <span>シーズン管理</span>
                 </Link>
                 <Link
                   href="/admin/templates"
-                  className="hidden sm:flex items-center space-x-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 rounded-md transition-colors text-sm font-medium"
+                  className="hidden sm:flex items-center space-x-1 px-3 py-1.5 text-slate-400 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-all duration-200 text-sm font-medium"
                 >
                   <span>📋</span>
                   <span>テンプレート管理</span>
@@ -67,12 +72,12 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
 
             {user && (
               <>
-                <span className="text-sm hidden md:block">
+                <span className="text-sm text-slate-400 hidden md:block">
                   {user.email}
                 </span>
                 <button
                   onClick={() => setIsDeleteModalOpen(true)}
-                  className="text-sm text-red-200 hover:text-red-100 underline hidden md:block"
+                  className="text-sm text-red-400/70 hover:text-red-400 underline hidden md:block transition-colors"
                 >
                   アカウント削除
                 </button>
@@ -89,18 +94,20 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
         </div>
 
         {/* モバイル版の追加情報 */}
-        <div className="sm:hidden pb-3 flex items-center justify-between">
+        <div className="sm:hidden pb-3 flex items-center justify-between border-t border-white/5 pt-3">
           {currentDeck && (
-            <div className="bg-blue-700 px-3 py-1 rounded-md inline-block">
-              <span className="text-sm">
-                使用中: {currentDeck.className} - {currentDeck.deckName}
+            <div className="bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full backdrop-blur-sm">
+              <span className="text-xs text-slate-300">
+                <span className="font-medium text-violet-300">{currentDeck.className}</span>
+                <span className="mx-1 text-slate-600">-</span>
+                {currentDeck.deckName}
               </span>
             </div>
           )}
           <div className="flex items-center space-x-2 ml-auto">
             <Link
               href="/stats"
-              className="flex items-center space-x-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 rounded-md transition-colors text-sm font-medium"
+              className="flex items-center space-x-1 px-3 py-1.5 text-slate-400 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-all duration-200 text-sm font-medium"
             >
               <span>📈</span>
               <span>全体統計</span>
@@ -109,14 +116,14 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
               <>
                 <Link
                   href="/admin/seasons"
-                  className="flex items-center space-x-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 rounded-md transition-colors text-sm font-medium"
+                  className="flex items-center space-x-1 px-3 py-1.5 text-slate-400 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-all duration-200 text-sm font-medium"
                 >
                   <span>⚙️</span>
                   <span>シーズン</span>
                 </Link>
                 <Link
                   href="/admin/templates"
-                  className="flex items-center space-x-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 rounded-md transition-colors text-sm font-medium"
+                  className="flex items-center space-x-1 px-3 py-1.5 text-slate-400 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-all duration-200 text-sm font-medium"
                 >
                   <span>📋</span>
                   <span>テンプレート</span>

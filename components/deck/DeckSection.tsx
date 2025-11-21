@@ -27,10 +27,10 @@ export const DeckSection: React.FC<DeckSectionProps> = ({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        <h2 className="text-2xl font-bold text-slate-100 mb-2">
           デッキ管理
         </h2>
-        <p className="text-gray-600 mb-6">
+        <p className="text-slate-400">
           使用するデッキを登録・選択してください。選択したデッキで対戦記録を行います。
         </p>
       </div>

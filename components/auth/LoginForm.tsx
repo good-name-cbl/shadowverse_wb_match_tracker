@@ -49,15 +49,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <div ref={formRef} className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+      <div ref={formRef} className="glass-card rounded-xl px-8 pt-6 pb-8 mb-4">
+        <h2 className="text-2xl font-bold text-center text-slate-100 mb-6">
           ログイン
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* エラー表示 - より目立つデザイン */}
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+            <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-lg">
               <div className="flex items-start">
                 <div className="flex-shrink-0">
                   <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -65,7 +65,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-red-800">
+                  <p className="text-sm font-medium text-red-400">
                     {error}
                   </p>
                 </div>
@@ -100,20 +100,20 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           </Button>
         </form>
 
-        <div className="mt-6 text-center space-y-2">
+        <div className="mt-6 text-center space-y-3">
           <button
             type="button"
             onClick={onSwitchToReset}
-            className="text-blue-600 hover:text-blue-800 text-sm"
+            className="text-violet-400 hover:text-violet-300 text-sm transition-colors"
           >
             パスワードを忘れた方はこちら
           </button>
-          <div className="text-gray-600 text-sm">
+          <div className="text-slate-400 text-sm">
             アカウントをお持ちでない方は{' '}
             <button
               type="button"
               onClick={onSwitchToSignup}
-              className="text-blue-600 hover:text-blue-800"
+              className="text-violet-400 hover:text-violet-300 font-medium transition-colors"
             >
               新規登録
             </button>

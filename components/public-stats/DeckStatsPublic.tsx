@@ -44,24 +44,24 @@ export const DeckStatsPublic: React.FC<DeckStatsPublicProps> = ({ stats }) => {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="glass-card rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-slate-100 mb-4">
           フィルター
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Class Filter */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               クラス
             </label>
             <select
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value as ClassType | 'all')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 glass-input rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-slate-200"
             >
-              <option value="all">すべて</option>
+              <option value="all" className="bg-slate-900 text-slate-200">すべて</option>
               {CLASSES.map((cls) => (
-                <option key={cls} value={cls}>
+                <option key={cls} value={cls} className="bg-slate-900 text-slate-200">
                   {cls}
                 </option>
               ))}
@@ -70,34 +70,34 @@ export const DeckStatsPublic: React.FC<DeckStatsPublicProps> = ({ stats }) => {
 
           {/* Sort By */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               並び順
             </label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'usage' | 'winRate')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 glass-input rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-slate-200"
             >
-              <option value="usage">使用率順</option>
-              <option value="winRate">勝率順</option>
+              <option value="usage" className="bg-slate-900 text-slate-200">使用率順</option>
+              <option value="winRate" className="bg-slate-900 text-slate-200">勝率順</option>
             </select>
           </div>
 
           {/* Min Games (for win rate sort) */}
           {sortBy === 'winRate' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 最低試合数
               </label>
               <select
                 value={minGames}
                 onChange={(e) => setMinGames(Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 glass-input rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-slate-200"
               >
-                <option value={5}>5試合以上</option>
-                <option value={10}>10試合以上</option>
-                <option value={20}>20試合以上</option>
-                <option value={50}>50試合以上</option>
+                <option value={5} className="bg-slate-900 text-slate-200">5試合以上</option>
+                <option value={10} className="bg-slate-900 text-slate-200">10試合以上</option>
+                <option value={20} className="bg-slate-900 text-slate-200">20試合以上</option>
+                <option value={50} className="bg-slate-900 text-slate-200">50試合以上</option>
               </select>
             </div>
           )}
@@ -105,18 +105,18 @@ export const DeckStatsPublic: React.FC<DeckStatsPublicProps> = ({ stats }) => {
       </div>
 
       {/* Stats List */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="glass-card rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-slate-100 mb-4">
           {sortBy === 'usage' ? '📊 デッキ使用率 TOP20' : '🏆 デッキ勝率 TOP20'}
           {sortBy === 'winRate' && (
-            <span className="text-sm text-gray-500 ml-2">
+            <span className="text-sm text-slate-500 ml-2">
               （{minGames}試合以上）
             </span>
           )}
         </h3>
 
         {topStats.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">
+          <p className="text-slate-500 text-center py-8">
             該当するデータがありません
           </p>
         ) : (
@@ -129,34 +129,33 @@ export const DeckStatsPublic: React.FC<DeckStatsPublicProps> = ({ stats }) => {
               return (
                 <div
                   key={stat.statsKey}
-                  className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                  className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-4 hover:bg-slate-800/50 transition-colors"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-3 flex-1 min-w-0">
-                      <span className="text-xl font-bold text-gray-400">
+                      <span className="text-xl font-bold text-slate-600">
                         #{index + 1}
                       </span>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center space-x-2 mb-1">
                           <span
-                            className="px-2 py-0.5 rounded text-white text-xs font-medium flex-shrink-0"
+                            className="px-2 py-0.5 rounded text-white text-xs font-medium flex-shrink-0 shadow-sm"
                             style={{ backgroundColor: classColor }}
                           >
                             {className}
                           </span>
                         </div>
-                        <p className="font-semibold text-gray-800 truncate">
+                        <p className="font-semibold text-slate-200 truncate">
                           {deckName}
                         </p>
                       </div>
                     </div>
                     <div className="text-right ml-4">
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-slate-400">
                         {sortBy === 'usage' ? '試合数' : '勝率'}
                       </p>
-                      <p className={`text-xl font-bold ${
-                        sortBy === 'usage' ? 'text-gray-800' : getWinRateColor(stat.winRate)
-                      }`}>
+                      <p className={`text-xl font-bold ${sortBy === 'usage' ? 'text-slate-200' : getWinRateColor(stat.winRate)
+                        }`}>
                         {sortBy === 'usage'
                           ? stat.totalGames.toLocaleString()
                           : `${stat.winRate.toFixed(1)}%`
@@ -166,18 +165,18 @@ export const DeckStatsPublic: React.FC<DeckStatsPublicProps> = ({ stats }) => {
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-sm">
                     <div>
-                      <p className="text-gray-600">試合数</p>
-                      <p className="font-semibold">{stat.totalGames.toLocaleString()}</p>
+                      <p className="text-slate-400">試合数</p>
+                      <p className="font-semibold text-slate-200">{stat.totalGames.toLocaleString()}</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">勝率</p>
+                      <p className="text-slate-400">勝率</p>
                       <p className={`font-semibold ${getWinRateColor(stat.winRate)}`}>
                         {stat.winRate.toFixed(1)}%
                       </p>
                     </div>
                     <div>
-                      <p className="text-gray-600">勝数/敗数</p>
-                      <p className="font-semibold">
+                      <p className="text-slate-400">勝数/敗数</p>
+                      <p className="font-semibold text-slate-200">
                         {stat.wins}勝{stat.losses}敗
                       </p>
                     </div>

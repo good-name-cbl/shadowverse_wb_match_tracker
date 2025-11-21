@@ -31,22 +31,22 @@ export const ClassStatsPublic: React.FC<ClassStatsPublicProps> = ({ stats }) => 
   return (
     <div className="space-y-6">
       {/* Summary Card */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="glass-card rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-slate-100 mb-4">
           📊 クラス別統計サマリー
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-blue-50 rounded-lg p-4">
-            <p className="text-sm text-gray-600 mb-1">総試合数</p>
-            <p className="text-2xl font-bold text-blue-600">{totalGames.toLocaleString()}</p>
+          <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+            <p className="text-sm text-blue-300 mb-1">総試合数</p>
+            <p className="text-2xl font-bold text-blue-400">{totalGames.toLocaleString()}</p>
           </div>
-          <div className="bg-green-50 rounded-lg p-4">
-            <p className="text-sm text-gray-600 mb-1">集計クラス数</p>
-            <p className="text-2xl font-bold text-green-600">{stats.length}</p>
+          <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
+            <p className="text-sm text-green-300 mb-1">集計クラス数</p>
+            <p className="text-2xl font-bold text-green-400">{stats.length}</p>
           </div>
-          <div className="bg-purple-50 rounded-lg p-4">
-            <p className="text-sm text-gray-600 mb-1">平均勝率</p>
-            <p className="text-2xl font-bold text-purple-600">
+          <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-4">
+            <p className="text-sm text-purple-300 mb-1">平均勝率</p>
+            <p className="text-2xl font-bold text-purple-400">
               {stats.length > 0
                 ? (stats.reduce((sum, s) => sum + s.winRate, 0) / stats.length).toFixed(1)
                 : 0}%
@@ -56,8 +56,8 @@ export const ClassStatsPublic: React.FC<ClassStatsPublicProps> = ({ stats }) => 
       </div>
 
       {/* Usage Ranking */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="glass-card rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-slate-100 mb-4">
           🔥 クラス使用率ランキング
         </h3>
         <div className="space-y-3">
@@ -68,41 +68,41 @@ export const ClassStatsPublic: React.FC<ClassStatsPublicProps> = ({ stats }) => 
             return (
               <div
                 key={stat.statsKey}
-                className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-4 hover:bg-slate-800/50 transition-colors"
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-3">
-                    <span className="text-2xl font-bold text-gray-400">
+                    <span className="text-2xl font-bold text-slate-600">
                       #{index + 1}
                     </span>
                     <span
-                      className="px-3 py-1 rounded-full text-white font-medium"
+                      className="px-3 py-1 rounded-full text-white font-medium shadow-sm"
                       style={{ backgroundColor: classColor }}
                     >
                       {stat.statsKey}
                     </span>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-600">使用率</p>
-                    <p className="text-xl font-bold text-gray-800">
+                    <p className="text-sm text-slate-400">使用率</p>
+                    <p className="text-xl font-bold text-slate-200">
                       {usageRate.toFixed(1)}%
                     </p>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-sm">
                   <div>
-                    <p className="text-gray-600">試合数</p>
-                    <p className="font-semibold">{stat.totalGames.toLocaleString()}</p>
+                    <p className="text-slate-400">試合数</p>
+                    <p className="font-semibold text-slate-200">{stat.totalGames.toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600">勝率</p>
+                    <p className="text-slate-400">勝率</p>
                     <p className={`font-semibold ${getWinRateColor(stat.winRate)}`}>
                       {stat.winRate.toFixed(1)}%
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-600">勝数/敗数</p>
-                    <p className="font-semibold">
+                    <p className="text-slate-400">勝数/敗数</p>
+                    <p className="font-semibold text-slate-200">
                       {stat.wins}勝{stat.losses}敗
                     </p>
                   </div>
@@ -114,13 +114,13 @@ export const ClassStatsPublic: React.FC<ClassStatsPublicProps> = ({ stats }) => 
       </div>
 
       {/* Win Rate Ranking */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="glass-card rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-slate-100 mb-4">
           🏆 クラス勝率ランキング
-          <span className="text-sm text-gray-500 ml-2">（10試合以上）</span>
+          <span className="text-sm text-slate-500 ml-2">（10試合以上）</span>
         </h3>
         {statsByWinRate.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">
+          <p className="text-slate-500 text-center py-8">
             10試合以上のデータがありません
           </p>
         ) : (
@@ -131,22 +131,22 @@ export const ClassStatsPublic: React.FC<ClassStatsPublicProps> = ({ stats }) => 
               return (
                 <div
                   key={stat.statsKey}
-                  className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                  className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-4 hover:bg-slate-800/50 transition-colors"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-3">
-                      <span className="text-2xl font-bold text-gray-400">
+                      <span className="text-2xl font-bold text-slate-600">
                         #{index + 1}
                       </span>
                       <span
-                        className="px-3 py-1 rounded-full text-white font-medium"
+                        className="px-3 py-1 rounded-full text-white font-medium shadow-sm"
                         style={{ backgroundColor: classColor }}
                       >
                         {stat.statsKey}
                       </span>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-gray-600">勝率</p>
+                      <p className="text-sm text-slate-400">勝率</p>
                       <p className={`text-2xl font-bold ${getWinRateColor(stat.winRate)}`}>
                         {stat.winRate.toFixed(1)}%
                       </p>
@@ -154,16 +154,16 @@ export const ClassStatsPublic: React.FC<ClassStatsPublicProps> = ({ stats }) => 
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-sm">
                     <div>
-                      <p className="text-gray-600">試合数</p>
-                      <p className="font-semibold">{stat.totalGames.toLocaleString()}</p>
+                      <p className="text-slate-400">試合数</p>
+                      <p className="font-semibold text-slate-200">{stat.totalGames.toLocaleString()}</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">勝数</p>
-                      <p className="font-semibold text-green-600">{stat.wins}</p>
+                      <p className="text-slate-400">勝数</p>
+                      <p className="font-semibold text-green-400">{stat.wins}</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">敗数</p>
-                      <p className="font-semibold text-red-600">{stat.losses}</p>
+                      <p className="text-slate-400">敗数</p>
+                      <p className="font-semibold text-red-400">{stat.losses}</p>
                     </div>
                   </div>
                 </div>

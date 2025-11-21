@@ -145,8 +145,8 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <div ref={formRef} className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+      <div ref={formRef} className="glass-card rounded-xl px-8 pt-6 pb-8 mb-4">
+        <h2 className="text-2xl font-bold text-center text-slate-100 mb-6">
           {needsConfirmation ? 'メール確認' : '新規登録'}
         </h2>
 
@@ -154,7 +154,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* エラー表示 - より目立つデザイン */}
             {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+              <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-lg">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
                     <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -162,7 +162,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-red-800">
+                    <p className="text-sm font-medium text-red-400">
                       {error}
                     </p>
                   </div>
@@ -172,7 +172,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
 
             {/* 成功メッセージ */}
             {successMessage && (
-              <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md">
+              <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-lg">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
                     <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
@@ -180,7 +180,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-green-800">
+                    <p className="text-sm font-medium text-green-400">
                       {successMessage}
                     </p>
                   </div>
@@ -206,8 +206,8 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                 required
               />
               {/* パスワードポリシーのヘルプテキスト */}
-              <div className="mt-2 text-xs text-gray-600 bg-gray-50 p-3 rounded-md">
-                <p className="font-medium mb-1">パスワードの要件:</p>
+              <div className="mt-2 text-xs text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
+                <p className="font-medium mb-1 text-slate-300">パスワードの要件:</p>
                 <ul className="list-disc list-inside space-y-1">
                   <li>8文字以上</li>
                   <li>大文字を含む（A-Z）</li>
@@ -239,7 +239,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
           <form onSubmit={handleConfirmSignUp} className="space-y-4">
             {/* エラー表示 */}
             {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+              <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-lg">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
                     <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -247,7 +247,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-red-800">
+                    <p className="text-sm font-medium text-red-400">
                       {error}
                     </p>
                   </div>
@@ -257,7 +257,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
 
             {/* 成功メッセージ */}
             {successMessage && (
-              <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md">
+              <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-lg">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
                     <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
@@ -265,7 +265,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-green-800">
+                    <p className="text-sm font-medium text-green-400">
                       {successMessage}
                     </p>
                   </div>
@@ -273,7 +273,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
               </div>
             )}
 
-            <div className="bg-blue-50 border border-blue-200 text-blue-800 text-sm p-3 rounded">
+            <div className="bg-blue-500/10 border border-blue-500/20 text-blue-300 text-sm p-3 rounded-lg">
               <p>{registeredEmail} に確認コードを送信しました。</p>
               <p className="mt-1">メールに記載された6桁の確認コードを入力してください。</p>
             </div>
@@ -311,7 +311,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                   setError('');
                   setSuccessMessage('');
                 }}
-                className="text-sm text-gray-600 hover:text-gray-800"
+                className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
               >
                 ← 戻る
               </button>
@@ -321,12 +321,12 @@ export const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
 
         {!needsConfirmation && (
           <div className="mt-6 text-center">
-            <div className="text-gray-600 text-sm">
+            <div className="text-slate-400 text-sm">
               すでにアカウントをお持ちの方は{' '}
               <button
                 type="button"
                 onClick={onSwitchToLogin}
-                className="text-blue-600 hover:text-blue-800"
+                className="text-violet-400 hover:text-violet-300 font-medium transition-colors"
               >
                 ログイン
               </button>

@@ -99,10 +99,10 @@ export default function Home() {
 
   if (authLoading || isDataLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">読み込み中...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-500 mx-auto mb-4"></div>
+          <p className="text-slate-400">読み込み中...</p>
         </div>
       </div>
     );
@@ -178,12 +178,12 @@ export default function Home() {
           prevDecks.map((deck) =>
             deck.id === tempId
               ? {
-                  id: newDeck.id,
-                  userId: newDeck.userId,
-                  className: newDeck.className as ClassType,
-                  deckName: newDeck.deckName,
-                  createdAt: newDeck.createdAt || new Date().toISOString(),
-                }
+                id: newDeck.id,
+                userId: newDeck.userId,
+                className: newDeck.className as ClassType,
+                deckName: newDeck.deckName,
+                createdAt: newDeck.createdAt || new Date().toISOString(),
+              }
               : deck
           )
         );
@@ -294,16 +294,16 @@ export default function Home() {
           prevRecords.map((record) =>
             record.id === tempId
               ? {
-                  id: newRecord.id,
-                  userId: newRecord.userId,
-                  myDeckId: newRecord.myDeckId,
-                  seasonId: newRecord.seasonId,
-                  opponentClass: newRecord.opponentClass as ClassType,
-                  opponentDeckType: newRecord.opponentDeckType,
-                  isFirstPlayer: newRecord.isFirstPlayer,
-                  isWin: newRecord.isWin,
-                  recordedAt: newRecord.recordedAt,
-                }
+                id: newRecord.id,
+                userId: newRecord.userId,
+                myDeckId: newRecord.myDeckId,
+                seasonId: newRecord.seasonId,
+                opponentClass: newRecord.opponentClass as ClassType,
+                opponentDeckType: newRecord.opponentDeckType,
+                isFirstPlayer: newRecord.isFirstPlayer,
+                isWin: newRecord.isWin,
+                recordedAt: newRecord.recordedAt,
+              }
               : record
           )
         );
@@ -361,56 +361,55 @@ export default function Home() {
 
       <Layout currentDeck={currentDeck}>
         <div className="space-y-4 sm:space-y-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-1">
-          <nav className="flex space-x-1">
-            {tabButtons.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex flex-col items-center justify-center px-2 py-3 text-xs sm:text-sm font-medium rounded-md transition-colors ${
-                  activeTab === tab.id
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <span className="text-xl sm:text-lg mb-1">{tab.icon}</span>
-                <span className="text-xs sm:text-sm leading-tight">{tab.label}</span>
-              </button>
-            ))}
-          </nav>
+          <div className="glass rounded-xl p-1 border border-white/5">
+            <nav className="flex space-x-1">
+              {tabButtons.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 flex flex-col items-center justify-center px-2 py-3 text-xs sm:text-sm font-medium rounded-lg transition-all duration-200 ${activeTab === tab.id
+                      ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/25'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                    }`}
+                >
+                  <span className="text-xl sm:text-lg mb-1">{tab.icon}</span>
+                  <span className="text-xs sm:text-sm leading-tight">{tab.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          {activeTab === 'decks' && (
+            <DeckSection
+              decks={decks}
+              currentDeckId={currentDeckId}
+              seasonId={currentSeasonId}
+              onAddDeck={handleAddDeck}
+              onSelectDeck={handleSelectDeck}
+              onDeleteDeck={handleDeleteDeck}
+            />
+          )}
+
+          {activeTab === 'matches' && (
+            <MatchSection
+              currentDeck={currentDeck}
+              currentDeckId={currentDeckId}
+              seasonId={currentSeasonId}
+              records={records}
+              decks={decks}
+              onSelectDeck={handleSelectDeckById}
+              onAddRecord={handleAddRecord}
+              onDeleteRecord={handleDeleteRecord}
+            />
+          )}
+
+          {activeTab === 'stats' && (
+            <StatsSection
+              records={records}
+              decks={decks}
+            />
+          )}
         </div>
-
-        {activeTab === 'decks' && (
-          <DeckSection
-            decks={decks}
-            currentDeckId={currentDeckId}
-            seasonId={currentSeasonId}
-            onAddDeck={handleAddDeck}
-            onSelectDeck={handleSelectDeck}
-            onDeleteDeck={handleDeleteDeck}
-          />
-        )}
-
-        {activeTab === 'matches' && (
-          <MatchSection
-            currentDeck={currentDeck}
-            currentDeckId={currentDeckId}
-            seasonId={currentSeasonId}
-            records={records}
-            decks={decks}
-            onSelectDeck={handleSelectDeckById}
-            onAddRecord={handleAddRecord}
-            onDeleteRecord={handleDeleteRecord}
-          />
-        )}
-
-        {activeTab === 'stats' && (
-          <StatsSection
-            records={records}
-            decks={decks}
-          />
-        )}
-      </div>
       </Layout>
     </>
   );

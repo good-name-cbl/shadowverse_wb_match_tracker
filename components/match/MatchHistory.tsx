@@ -33,11 +33,11 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
 
   if (records.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="glass-card rounded-xl p-8 text-center">
+        <h3 className="text-lg font-semibold text-slate-200 mb-4">
           最近の対戦履歴
         </h3>
-        <div className="text-center py-8 text-gray-500">
+        <div className="py-8 text-slate-400">
           まだ対戦記録がありません。<br />
           上のフォームから対戦結果を記録してください。
         </div>
@@ -46,8 +46,9 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">
+    <div className="glass-card rounded-xl p-6">
+      <h3 className="text-lg font-semibold text-slate-200 mb-4 flex items-center">
+        <span className="mr-2">⚔️</span>
         最近の対戦履歴（最新10件）
       </h3>
 
@@ -64,47 +65,48 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
       <div className="hidden md:block overflow-x-auto">
         <table className="min-w-full table-auto">
           <thead>
-            <tr className="bg-gray-50">
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <tr className="border-b border-slate-700/50">
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
                 日時
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
                 使用デッキ
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
                 相手
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                先行/後攻
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                先攻/後攻
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
                 勝敗
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
                 操作
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="divide-y divide-slate-700/30">
             {records.slice(0, 10).map((record) => {
               const deck = getDeckById(record.myDeckId);
               return (
-                <tr key={record.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                <tr key={record.id} className="hover:bg-slate-800/30 transition-colors">
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-300">
                     {formatDate(record.recordedAt)}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
                     {deck ? (
                       <div className="flex items-center space-x-2">
                         <div
-                          className={`w-3 h-3 rounded-full ${CLASS_COLORS[deck.className]}`}
+                          className={`w-2.5 h-2.5 rounded-full shadow-[0_0_8px_currentColor] ${CLASS_COLORS[deck.className].replace('bg-', 'text-').replace('text-white', '')}`}
+                          style={{ backgroundColor: 'currentColor' }}
                         />
-                        <span className="text-sm text-gray-900">
+                        <span className="text-sm text-slate-200">
                           {deck.deckName}
                         </span>
                       </div>
                     ) : (
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-slate-500">
                         削除済みデッキ
                       </span>
                     )}
@@ -112,28 +114,28 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
                   <td className="px-4 py-4 whitespace-nowrap">
                     <div className="flex items-center space-x-2">
                       <div
-                        className={`w-3 h-3 rounded-full ${CLASS_COLORS[record.opponentClass]}`}
+                        className={`w-2.5 h-2.5 rounded-full shadow-[0_0_8px_currentColor] ${CLASS_COLORS[record.opponentClass].replace('bg-', 'text-').replace('text-white', '')}`}
+                        style={{ backgroundColor: 'currentColor' }}
                       />
                       <div>
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-slate-200">
                           {record.opponentDeckType}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-slate-500">
                           {record.opponentClass}
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {record.isFirstPlayer ? '先行' : '後攻'}
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-300">
+                    {record.isFirstPlayer ? '先攻' : '後攻'}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        record.isWin
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}
+                      className={`inline-flex px-2.5 py-1 text-xs font-semibold rounded-full border ${record.isWin
+                          ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                          : 'bg-red-500/10 text-red-400 border-red-500/20'
+                        }`}
                     >
                       {record.isWin ? '勝利' : '敗北'}
                     </span>
@@ -141,7 +143,8 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
                   <td className="px-4 py-4 whitespace-nowrap">
                     <Button
                       size="sm"
-                      variant="danger"
+                      variant="ghost"
+                      className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
                       onClick={() => {
                         if (confirm('この対戦記録を削除しますか？')) {
                           onDeleteRecord(record.id);

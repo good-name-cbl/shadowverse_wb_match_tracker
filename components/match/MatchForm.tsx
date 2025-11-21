@@ -40,7 +40,7 @@ export const MatchForm: React.FC<MatchFormProps> = ({
   }));
 
   const playerOrderOptions = [
-    { value: 'true', label: '先行' },
+    { value: 'true', label: '先攻' },
     { value: 'false', label: '後攻' }
   ];
 
@@ -84,11 +84,11 @@ export const MatchForm: React.FC<MatchFormProps> = ({
 
   if (!currentDeck) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="glass-card rounded-xl p-8 text-center">
+        <h3 className="text-lg font-semibold text-slate-200 mb-4">
           対戦結果の記録
         </h3>
-        <div className="text-center py-8 text-gray-500">
+        <div className="py-8 text-slate-400">
           対戦記録を行うには、まずデッキを選択してください。
         </div>
       </div>
@@ -96,19 +96,21 @@ export const MatchForm: React.FC<MatchFormProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">
+    <div className="glass-card rounded-xl p-6">
+      <h3 className="text-lg font-semibold text-slate-200 mb-6 flex items-center">
+        <span className="mr-2">📝</span>
         対戦結果の記録
       </h3>
 
-      <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-        <span className="text-sm text-blue-800">
-          使用デッキ: {currentDeck.className} - {currentDeck.deckName}
+      <div className="mb-6 p-4 bg-violet-500/10 border border-violet-500/20 rounded-xl">
+        <span className="text-sm text-violet-200 flex items-center">
+          <span className="bg-violet-500/20 px-2 py-0.5 rounded text-xs mr-2 border border-violet-500/30">使用中</span>
+          {currentDeck.className} - {currentDeck.deckName}
         </span>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 gap-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="grid grid-cols-1 gap-5">
           <Select
             label="相手のクラス"
             value={opponentClass}
@@ -120,7 +122,7 @@ export const MatchForm: React.FC<MatchFormProps> = ({
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-slate-300 ml-1">
                 相手のデッキタイプ
               </label>
               <Button
@@ -129,8 +131,9 @@ export const MatchForm: React.FC<MatchFormProps> = ({
                 variant="secondary"
                 onClick={() => setShowTemplates(!showTemplates)}
                 disabled={!opponentClass}
+                className="text-xs"
               >
-                {showTemplates ? '閉じる' : 'テンプレート'}
+                {showTemplates ? '閉じる' : 'テンプレートから入力'}
               </Button>
             </div>
             <Input
@@ -140,7 +143,7 @@ export const MatchForm: React.FC<MatchFormProps> = ({
               required
             />
             {showTemplates && opponentClass && (
-              <div className="mt-2 p-4 border rounded-lg bg-gray-50">
+              <div className="mt-3 p-4 border border-slate-700 rounded-xl bg-slate-900/50 backdrop-blur-sm">
                 <DeckTemplateSelector
                   selectedClass={opponentClass as ClassType}
                   seasonId={seasonId}
@@ -152,9 +155,9 @@ export const MatchForm: React.FC<MatchFormProps> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <RadioGroup
-            label="先行/後攻"
+            label="先攻/後攻"
             name="playerOrder"
             value={isFirstPlayer}
             onChange={setIsFirstPlayer}
@@ -171,7 +174,7 @@ export const MatchForm: React.FC<MatchFormProps> = ({
         </div>
 
         {error && (
-          <div className="text-red-600 text-sm">
+          <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
             {error}
           </div>
         )}
@@ -179,6 +182,7 @@ export const MatchForm: React.FC<MatchFormProps> = ({
         <Button
           type="submit"
           isLoading={isLoading}
+          className="w-full"
         >
           対戦結果を記録
         </Button>

@@ -37,10 +37,10 @@ export const MatchSection: React.FC<MatchSectionProps> = ({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        <h2 className="text-2xl font-bold text-slate-100 mb-2">
           対戦記録
         </h2>
-        <p className="text-gray-600 mb-6">
+        <p className="text-slate-400">
           対戦結果を記録して、詳細な統計情報を確認しましょう。
         </p>
       </div>

@@ -24,24 +24,18 @@ export const DeckFilter: React.FC<DeckFilterProps> = ({
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">
-        統計フィルター
-      </h3>
-
-      <div className="max-w-md">
-        <Select
-          label="使用デッキでフィルター"
-          value={selectedDeckId || ''}
-          onChange={(e) => onDeckChange(e.target.value || null)}
-          options={deckOptions}
-          placeholder="デッキを選択"
-        />
-      </div>
+    <div className="w-full">
+      <Select
+        label="使用デッキでフィルター"
+        value={selectedDeckId || ''}
+        onChange={(e) => onDeckChange(e.target.value || null)}
+        options={deckOptions}
+        placeholder="デッキを選択"
+      />
 
       {selectedDeckId && (
-        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-          <p className="text-sm text-blue-800">
+        <div className="mt-3 p-3 bg-violet-500/10 rounded-xl border border-violet-500/20 backdrop-blur-sm">
+          <p className="text-sm text-violet-200">
             {decks.find(deck => deck.id === selectedDeckId)?.deckName} の統計を表示中
           </p>
         </div>

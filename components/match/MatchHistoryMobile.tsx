@@ -35,17 +35,16 @@ export const MatchHistoryMobile: React.FC<MatchHistoryMobileProps> = ({
       {records.slice(0, 10).map((record) => {
         const deck = getDeckById(record.myDeckId);
         return (
-          <div key={record.id} className="bg-gray-50 rounded-lg p-4 border">
+          <div key={record.id} className="glass-card rounded-xl p-4 border border-slate-700/50">
             <div className="flex items-start justify-between mb-3">
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-slate-400">
                 {formatDate(record.recordedAt)}
               </div>
               <span
-                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                  record.isWin
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-red-100 text-red-800'
-                }`}
+                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${record.isWin
+                    ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                    : 'bg-red-500/10 text-red-400 border-red-500/20'
+                  }`}
               >
                 {record.isWin ? '勝利' : '敗北'}
               </span>
@@ -53,48 +52,50 @@ export const MatchHistoryMobile: React.FC<MatchHistoryMobileProps> = ({
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-600 font-medium">使用デッキ</span>
+                <span className="text-xs text-slate-500 font-medium">使用デッキ</span>
                 {deck ? (
                   <div className="flex items-center space-x-2">
                     <div
-                      className={`w-3 h-3 rounded-full ${CLASS_COLORS[deck.className]}`}
+                      className={`w-2.5 h-2.5 rounded-full shadow-[0_0_8px_currentColor] ${CLASS_COLORS[deck.className].replace('bg-', 'text-').replace('text-white', '')}`}
+                      style={{ backgroundColor: 'currentColor' }}
                     />
-                    <span className="text-sm text-gray-900">
+                    <span className="text-sm text-slate-200">
                       {deck.deckName}
                     </span>
                   </div>
                 ) : (
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-slate-500">
                     削除済みデッキ
                   </span>
                 )}
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-600 font-medium">相手</span>
+                <span className="text-xs text-slate-500 font-medium">相手</span>
                 <div className="flex items-center space-x-2">
                   <div
-                    className={`w-3 h-3 rounded-full ${CLASS_COLORS[record.opponentClass]}`}
+                    className={`w-2.5 h-2.5 rounded-full shadow-[0_0_8px_currentColor] ${CLASS_COLORS[record.opponentClass].replace('bg-', 'text-').replace('text-white', '')}`}
+                    style={{ backgroundColor: 'currentColor' }}
                   />
-                  <span className="text-sm text-gray-900">
+                  <span className="text-sm text-slate-200">
                     {record.opponentDeckType}
                   </span>
                 </div>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-600 font-medium">先行/後攻</span>
-                <span className="text-sm text-gray-900">
-                  {record.isFirstPlayer ? '先行' : '後攻'}
+                <span className="text-xs text-slate-500 font-medium">先攻/後攻</span>
+                <span className="text-sm text-slate-200">
+                  {record.isFirstPlayer ? '先攻' : '後攻'}
                 </span>
               </div>
             </div>
 
-            <div className="mt-3 pt-3 border-t border-gray-200">
+            <div className="mt-3 pt-3 border-t border-slate-700/50">
               <Button
                 size="sm"
-                variant="danger"
-                className="w-full"
+                variant="ghost"
+                className="w-full text-red-400 hover:text-red-300 hover:bg-red-500/10"
                 onClick={() => {
                   if (confirm('この対戦記録を削除しますか？')) {
                     onDeleteRecord(record.id);

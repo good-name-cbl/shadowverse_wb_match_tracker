@@ -12,16 +12,17 @@ export const Input: React.FC<InputProps> = ({
   ...props
 }) => {
   const inputClasses = [
-    'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400',
-    'focus:outline-none focus:ring-blue-500 focus:border-blue-500',
-    error && 'border-red-300 focus:ring-red-500 focus:border-red-500',
+    'w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-xl shadow-sm placeholder-slate-500 text-slate-100 transition-all duration-200',
+    'focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500',
+    'hover:border-slate-600',
+    error && 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500',
     className,
   ].filter(Boolean).join(' ');
 
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-slate-300 mb-1.5 ml-1">
           {label}
         </label>
       )}
@@ -30,7 +31,7 @@ export const Input: React.FC<InputProps> = ({
         {...props}
       />
       {error && (
-        <p className="mt-1 text-sm text-red-600">
+        <p className="mt-1.5 ml-1 text-xs text-red-400">
           {error}
         </p>
       )}

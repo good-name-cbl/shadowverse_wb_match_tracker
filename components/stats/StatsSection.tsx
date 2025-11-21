@@ -46,25 +46,31 @@ export const StatsSection: React.FC<StatsSectionProps> = ({ records, decks }) =>
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        <h2 className="text-2xl font-bold text-slate-100 mb-2">
           統計情報
         </h2>
-        <p className="text-gray-600 mb-6">
+        <p className="text-slate-400">
           対戦記録から算出された詳細な統計情報を確認できます。
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <SeasonFilter
-          selectedSeasonId={selectedSeasonId}
-          onSeasonChange={setSelectedSeasonId}
-          storageKey="personalStatsSeasonId"
-        />
-        <DeckFilter
-          decks={decks}
-          selectedDeckId={selectedDeckId}
-          onDeckChange={setSelectedDeckId}
-        />
+      <div className="glass-card rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-slate-200 mb-4 flex items-center">
+          <span className="mr-2">🔍</span>
+          フィルター
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <SeasonFilter
+            selectedSeasonId={selectedSeasonId}
+            onSeasonChange={setSelectedSeasonId}
+            storageKey="personalStatsSeasonId"
+          />
+          <DeckFilter
+            decks={decks}
+            selectedDeckId={selectedDeckId}
+            onDeckChange={setSelectedDeckId}
+          />
+        </div>
       </div>
 
       <OverallStats stats={overallStats} />
