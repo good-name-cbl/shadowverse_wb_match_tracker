@@ -43,6 +43,26 @@ export const DeckStatsPublic: React.FC<DeckStatsPublicProps> = ({ stats }) => {
 
   return (
     <div className="space-y-6">
+      {/* Explanation Card */}
+      <div className="glass-card rounded-xl p-6 bg-green-500/5 border border-green-500/20">
+        <div className="flex items-start space-x-3">
+          <span className="text-2xl">ℹ️</span>
+          <div>
+            <h3 className="text-lg font-semibold text-green-300 mb-2">
+              この統計について
+            </h3>
+            <p className="text-slate-300 text-sm leading-relaxed">
+              <strong className="text-green-400">対戦相手が使用したデッキ</strong>の統計です。
+              テンプレート登録されたデッキと、登録外のデッキ（「その他（クラス名）」）の
+              使用率や勝率を確認できます。
+            </p>
+            <p className="text-slate-400 text-xs mt-2">
+              ※ 自分が使用したデッキは含まれません
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Filters */}
       <div className="glass-card rounded-xl p-6">
         <h3 className="text-lg font-semibold text-slate-100 mb-4">

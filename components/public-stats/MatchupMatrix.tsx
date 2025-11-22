@@ -43,6 +43,24 @@ export const MatchupMatrix: React.FC<MatchupMatrixProps> = ({ stats }) => {
 
   return (
     <div className="space-y-6">
+      {/* Explanation Card */}
+      <div className="glass-card rounded-xl p-6 bg-purple-500/5 border border-purple-500/20">
+        <div className="flex items-start space-x-3">
+          <span className="text-2xl">ℹ️</span>
+          <div>
+            <h3 className="text-lg font-semibold text-purple-300 mb-2">
+              この統計について
+            </h3>
+            <p className="text-slate-300 text-sm leading-relaxed">
+              <strong className="text-purple-400">クラス間の相性</strong>を示す統計です。
+              縦軸は<strong className="text-purple-400">自分が使用したクラス</strong>、
+              横軸は<strong className="text-purple-400">対戦相手のクラス</strong>を表します。
+              各セルの色は勝率を示し、緑色が有利、赤色が不利なマッチアップです。
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Settings */}
       <div className="glass-card rounded-xl p-6">
         <h3 className="text-lg font-semibold text-slate-100 mb-4">

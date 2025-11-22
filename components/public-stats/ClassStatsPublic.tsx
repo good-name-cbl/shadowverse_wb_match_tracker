@@ -30,6 +30,26 @@ export const ClassStatsPublic: React.FC<ClassStatsPublicProps> = ({ stats }) => 
 
   return (
     <div className="space-y-6">
+      {/* Explanation Card */}
+      <div className="glass-card rounded-xl p-6 bg-blue-500/5 border border-blue-500/20">
+        <div className="flex items-start space-x-3">
+          <span className="text-2xl">ℹ️</span>
+          <div>
+            <h3 className="text-lg font-semibold text-blue-300 mb-2">
+              この統計について
+            </h3>
+            <p className="text-slate-300 text-sm leading-relaxed">
+              <strong className="text-blue-400">対戦相手が使用したクラス</strong>の統計です。
+              各クラスとの対戦回数や勝率から、<strong className="text-blue-400">環境で人気のクラス</strong>や
+              <strong className="text-blue-400">メタゲーム</strong>を分析できます。
+            </p>
+            <p className="text-slate-400 text-xs mt-2">
+              ※ 自分が使用したクラスは含まれません
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Summary Card */}
       <div className="glass-card rounded-xl p-6">
         <h3 className="text-lg font-semibold text-slate-100 mb-4">

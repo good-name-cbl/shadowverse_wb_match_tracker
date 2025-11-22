@@ -25,6 +25,23 @@ export const TurnOrderStats: React.FC<TurnOrderStatsProps> = ({ stats }) => {
 
   return (
     <div className="space-y-6">
+      {/* Explanation Card */}
+      <div className="glass-card rounded-xl p-6 bg-amber-500/5 border border-amber-500/20">
+        <div className="flex items-start space-x-3">
+          <span className="text-2xl">ℹ️</span>
+          <div>
+            <h3 className="text-lg font-semibold text-amber-300 mb-2">
+              この統計について
+            </h3>
+            <p className="text-slate-300 text-sm leading-relaxed">
+              <strong className="text-amber-400">先攻と後攻の有利不利</strong>を示す統計です。
+              全ユーザーの対戦データから、先攻時と後攻時の勝率を集計しています。
+              勝率差が大きいほど、先攻・後攻の影響が強い環境といえます。
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Summary */}
       <div className="glass-card rounded-xl p-6">
         <h3 className="text-lg font-semibold text-slate-100 mb-4">

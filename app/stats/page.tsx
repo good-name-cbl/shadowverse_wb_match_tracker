@@ -156,7 +156,7 @@ export default function PublicStatsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <h1 className="text-xl font-bold bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-              シャドウバース 全体統計
+              Shadowverse Global Statistics
             </h1>
             <Link href="/" className="text-sm text-slate-400 hover:text-violet-400 transition-colors">
               ホームに戻る
