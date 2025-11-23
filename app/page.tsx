@@ -5,7 +5,7 @@ import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '@/amplify/data/resource';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { AuthPage } from '@/components/auth/AuthPage';
+import { LandingPage } from '@/components/landing/LandingPage';
 import { Layout } from '@/components/layout/Layout';
 import { DeckSection } from '@/components/deck/DeckSection';
 import { MatchSection } from '@/components/match/MatchSection';
@@ -109,7 +109,7 @@ export default function Home() {
   }
 
   if (!isAuthenticated || !user) {
-    return <AuthPage />;
+    return <LandingPage />;
   }
 
   const currentDeck = currentDeckId ? decks.find(deck => deck.id === currentDeckId) || null : null;

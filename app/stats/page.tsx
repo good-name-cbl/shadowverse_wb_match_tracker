@@ -9,6 +9,7 @@ import { DeckStatsPublic } from '@/components/public-stats/DeckStatsPublic';
 import { MatchupMatrix } from '@/components/public-stats/MatchupMatrix';
 import { TurnOrderStats } from '@/components/public-stats/TurnOrderStats';
 import { SeasonFilter } from '@/components/stats/SeasonFilter';
+import outputs from '@/amplify_outputs.json';
 
 const client = generateClient<Schema>();
 
@@ -42,14 +43,17 @@ export default function PublicStatsPage() {
   const fetchStats = async () => {
     try {
       setIsLoading(true);
+      setError(null);
       console.log('[DEBUG] Fetching stats with direct GraphQL...');
+      console.log('[DEBUG] API URL:', outputs.data.url);
+      console.log('[DEBUG] API Key exists:', !!outputs.data.api_key);
 
       // 直接fetchでGraphQLクエリを実行
-      const response = await fetch('https://df7vocdurnaynkgzi4bnmha3fu.appsync-api.ap-northeast-1.amazonaws.com/graphql', {
+      const response = await fetch(outputs.data.url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.NEXT_PUBLIC_APPSYNC_API_KEY || '',
+          'x-api-key': outputs.data.api_key,
         },
         body: JSON.stringify({
           query: `
@@ -74,8 +78,17 @@ export default function PublicStatsPage() {
         }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const result = await response.json();
       console.log('[DEBUG] GraphQL result:', result);
+
+      if (result.errors) {
+        console.error('[DEBUG] GraphQL errors:', result.errors);
+        throw new Error(result.errors[0]?.message || 'GraphQLエラーが発生しました');
+      }
 
       if (result.data?.listAggregatedStats?.items) {
         const stats: AggregatedStats[] = result.data.listAggregatedStats.items
