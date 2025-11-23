@@ -327,8 +327,8 @@ export default function TemplateManagementPage() {
 
   if (authLoading || isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-600">読み込み中...</div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-slate-400">読み込み中...</div>
       </div>
     );
   }
@@ -338,31 +338,31 @@ export default function TemplateManagementPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-gray-900">デッキテンプレート管理</h1>
+            <h1 className="text-3xl font-bold text-slate-100">デッキテンプレート管理</h1>
             <Button onClick={() => router.push('/')} variant="secondary">
               ホームに戻る
             </Button>
           </div>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-slate-400">
             デッキタイプのテンプレートをシーズン・クラス別に管理します
           </p>
         </div>
 
         {/* Error message */}
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
+          <div className="mb-6 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg">
             {error}
           </div>
         )}
 
         {/* Create form */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">新規テンプレート作成</h2>
+        <div className="glass-card rounded-xl p-8 mb-8">
+          <h2 className="text-xl font-semibold text-slate-100 mb-4">新規テンプレート作成</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Select
               label="シーズン"
@@ -413,13 +413,13 @@ export default function TemplateManagementPage() {
             .sort()
             .reverse()
             .map((seasonName) => (
-              <div key={seasonName} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">{seasonName}</h2>
+              <div key={seasonName} className="glass-card rounded-xl p-8">
+                <h2 className="text-xl font-semibold text-slate-100 mb-4">{seasonName}</h2>
                 {Object.keys(groupedTemplates[seasonName])
                   .sort()
                   .map((className) => (
                     <div key={className} className="mb-6 last:mb-0">
-                      <h3 className="text-lg font-medium text-gray-800 mb-3 border-b pb-2">
+                      <h3 className="text-lg font-medium text-slate-200 mb-3 border-b border-white/10 pb-2">
                         {className}
                       </h3>
                       <div className="space-y-2">
@@ -428,8 +428,8 @@ export default function TemplateManagementPage() {
                             key={template.id}
                             className={`flex items-center justify-between p-3 rounded-md border ${
                               template.isActive
-                                ? 'bg-white border-gray-200'
-                                : 'bg-gray-50 border-gray-300 opacity-60'
+                                ? 'glass border-white/10'
+                                : 'glass border-white/5 opacity-60'
                             }`}
                           >
                             {editingId === template.id ? (
@@ -458,22 +458,22 @@ export default function TemplateManagementPage() {
                               // View mode
                               <div className="flex-1">
                                 <div className="flex items-center space-x-3">
-                                  <span className="font-medium text-gray-900">
+                                  <span className="font-medium text-slate-200">
                                     {template.deckName}
                                   </span>
                                   {template.displayOrder !== undefined && (
-                                    <span className="text-xs text-gray-500">
+                                    <span className="text-xs text-slate-500">
                                       (順序: {template.displayOrder})
                                     </span>
                                   )}
                                   {!template.isActive && (
-                                    <span className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">
+                                    <span className="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">
                                       非アクティブ
                                     </span>
                                   )}
                                 </div>
                                 {template.description && (
-                                  <p className="text-sm text-gray-600 mt-1">
+                                  <p className="text-sm text-slate-400 mt-1">
                                     {template.description}
                                   </p>
                                 )}
@@ -534,7 +534,7 @@ export default function TemplateManagementPage() {
             ))}
 
           {Object.keys(groupedTemplates).length === 0 && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center text-gray-500">
+            <div className="glass-card rounded-xl p-8 text-center text-slate-400">
               まだテンプレートが登録されていません
             </div>
           )}

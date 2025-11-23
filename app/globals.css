@@ -10,12 +10,17 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
+  background-image:
+    linear-gradient(
       to bottom right,
-      rgb(var(--background-start-rgb)),
-      rgb(var(--background-end-rgb))
-    )
-    fixed;
+      rgba(2, 6, 23, 0.85),
+      rgba(15, 23, 42, 0.9)
+    ),
+    url('/images/background_FeastofWolves.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   min-height: 100vh;
 }
 

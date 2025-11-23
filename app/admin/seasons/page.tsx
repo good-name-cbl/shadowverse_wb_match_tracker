@@ -185,19 +185,19 @@ export default function SeasonsAdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="glass-card rounded-xl p-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">シーズン管理</h1>
+            <h1 className="text-2xl font-bold text-slate-100">シーズン管理</h1>
             <Button onClick={() => router.push('/')}>
               トップへ戻る
             </Button>
           </div>
 
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-              <p className="text-sm text-red-800">{error}</p>
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm mb-4">
+              {error}
             </div>
           )}
 
@@ -212,8 +212,8 @@ export default function SeasonsAdminPage() {
 
           {/* 新規作成フォーム */}
           {isCreating && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <h2 className="text-lg font-semibold mb-4">新しいシーズンを作成</h2>
+            <div className="glass border border-white/10 rounded-lg p-6 mb-6">
+              <h2 className="text-lg font-semibold text-slate-200 mb-4">新しいシーズンを作成</h2>
               <div className="space-y-4">
                 <Input
                   label="シーズン名"
@@ -249,15 +249,15 @@ export default function SeasonsAdminPage() {
 
           {/* シーズン一覧 */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold">シーズン一覧</h2>
+            <h2 className="text-lg font-semibold text-slate-200">シーズン一覧</h2>
             {isLoading && seasons.length === 0 ? (
-              <p className="text-gray-600">読み込み中...</p>
+              <p className="text-slate-400">読み込み中...</p>
             ) : seasons.length === 0 ? (
-              <p className="text-gray-600">シーズンがありません</p>
+              <p className="text-slate-400">シーズンがありません</p>
             ) : (
               <div className="space-y-2">
                 {seasons.map((season) => (
-                  <div key={season.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                  <div key={season.id} className="glass border border-white/5 rounded-lg p-4 hover:bg-white/5 transition-colors">
                     {editingSeasonId === season.id ? (
                       // 編集モード
                       <div className="space-y-4">
@@ -294,8 +294,8 @@ export default function SeasonsAdminPage() {
                       <div>
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="text-lg font-semibold">{season.name}</h3>
-                            <div className="text-sm text-gray-600 space-y-1">
+                            <h3 className="text-lg font-semibold text-slate-200">{season.name}</h3>
+                            <div className="text-sm text-slate-400 space-y-1">
                               {season.startDate && (
                                 <p>開始日: {season.startDate}</p>
                               )}

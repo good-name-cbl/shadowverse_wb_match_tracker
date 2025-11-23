@@ -153,8 +153,8 @@ export default function PublicStatsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-violet-900/20 via-slate-950 to-slate-950" />
+      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
         <div className="text-center relative z-10">
           <div className="relative w-16 h-16 mx-auto mb-4">
             <div className="absolute inset-0 rounded-full border-4 border-slate-800" />
@@ -167,14 +167,14 @@ export default function PublicStatsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 relative overflow-x-hidden">
-      {/* Background Ambient Glow */}
-      <div className="fixed top-0 left-0 w-full h-[500px] bg-gradient-to-b from-violet-900/20 to-transparent pointer-events-none" />
-      <div className="fixed top-20 right-0 w-[600px] h-[600px] bg-fuchsia-500/5 rounded-full blur-[100px] pointer-events-none" />
-      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
+    <div className="min-h-screen relative overflow-x-hidden">
+      {/* Background Ambient Glow - Subtle overlay for readability */}
+      <div className="fixed top-0 left-0 w-full h-[500px] bg-gradient-to-b from-violet-900/10 to-transparent pointer-events-none" />
+      <div className="fixed top-20 right-0 w-[600px] h-[600px] bg-fuchsia-500/3 rounded-full blur-[100px] pointer-events-none" />
+      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/3 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Header */}
-      <header className="glass border-b border-white/5 sticky top-0 z-50 backdrop-blur-xl bg-slate-950/70">
+      <header className="glass border-b border-white/5 sticky top-0 z-50 backdrop-blur-xl bg-slate-950/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <h1 className="text-xl font-bold bg-gradient-to-r from-violet-400 via-fuchsia-400 to-white bg-clip-text text-transparent">
