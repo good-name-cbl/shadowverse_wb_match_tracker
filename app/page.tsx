@@ -11,6 +11,7 @@ import { DeckSection } from '@/components/deck/DeckSection';
 import { MatchSection } from '@/components/match/MatchSection';
 import { StatsSection } from '@/components/stats/StatsSection';
 import { DataMigrationModal } from '@/components/migration/DataMigrationModal';
+import { EditMatchRecordModal } from '@/components/match/EditMatchRecordModal';
 import { Deck, MatchRecord, ClassType, Season } from '@/types';
 import { hasLocalStorageData } from '@/utils/dataMigration';
 
@@ -28,6 +29,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('decks');
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<MatchRecord | null>(null);
 
   // データの初期読み込み
   useEffect(() => {
@@ -342,6 +344,49 @@ export default function Home() {
     }
   };
 
+  const handleUpdateRecord = async (
+    recordId: string,
+    updatedData: {
+      opponentClass: ClassType;
+      opponentDeckType: string;
+      isFirstPlayer: boolean;
+      isWin: boolean;
+    }
+  ) => {
+    try {
+      // オプティミスティックUI: ローカル状態を先に更新
+      const originalRecords = records;
+      setRecords(records.map(record =>
+        record.id === recordId ? { ...record, ...updatedData } : record
+      ));
+
+      // DynamoDBで更新
+      await client.models.MatchRecord.update({
+        id: recordId,
+        opponentClass: updatedData.opponentClass,
+        opponentDeckType: updatedData.opponentDeckType,
+        isFirstPlayer: updatedData.isFirstPlayer,
+        isWin: updatedData.isWin,
+      });
+    } catch (error) {
+      console.error('対戦記録の更新に失敗しました:', error);
+      // エラー時は元に戻す（再取得）
+      const { data: recordsData } = await client.models.MatchRecord.list();
+      const fetchedRecords: MatchRecord[] = (recordsData || []).map((record) => ({
+        id: record.id,
+        userId: record.userId,
+        myDeckId: record.myDeckId,
+        seasonId: record.seasonId,
+        opponentClass: record.opponentClass as ClassType,
+        opponentDeckType: record.opponentDeckType,
+        isFirstPlayer: record.isFirstPlayer,
+        isWin: record.isWin,
+        recordedAt: record.recordedAt,
+      }));
+      setRecords(fetchedRecords);
+    }
+  };
+
   const tabButtons = [
     { id: 'decks' as const, label: 'デッキ管理', icon: '🃏' },
     { id: 'matches' as const, label: '対戦記録', icon: '⚔️' },
@@ -358,6 +403,13 @@ export default function Home() {
           onMigrationComplete={handleMigrationComplete}
         />
       )}
+
+      <EditMatchRecordModal
+        isOpen={editingRecord !== null}
+        record={editingRecord}
+        onClose={() => setEditingRecord(null)}
+        onUpdate={handleUpdateRecord}
+      />
 
       <Layout currentDeck={currentDeck}>
         <div className="space-y-4 sm:space-y-6">
@@ -400,6 +452,7 @@ export default function Home() {
               onSelectDeck={handleSelectDeckById}
               onAddRecord={handleAddRecord}
               onDeleteRecord={handleDeleteRecord}
+              onEditRecord={setEditingRecord}
             />
           )}
 

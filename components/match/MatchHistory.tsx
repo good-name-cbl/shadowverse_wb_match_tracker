@@ -10,12 +10,14 @@ interface MatchHistoryProps {
   records: MatchRecord[];
   decks: Deck[];
   onDeleteRecord: (recordId: string) => void | Promise<void>;
+  onEditRecord: (record: MatchRecord) => void;
 }
 
 export const MatchHistory: React.FC<MatchHistoryProps> = ({
   records,
   decks,
   onDeleteRecord,
+  onEditRecord,
 }) => {
   const getDeckById = (deckId: string) => {
     return decks.find(deck => deck.id === deckId);
@@ -58,6 +60,7 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
           records={records}
           decks={decks}
           onDeleteRecord={onDeleteRecord}
+          onEditRecord={onEditRecord}
         />
       </div>
 
@@ -87,7 +90,10 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-700/30">
-            {records.slice(0, 10).map((record) => {
+            {[...records]
+              .sort((a, b) => new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime())
+              .slice(0, 10)
+              .map((record) => {
               const deck = getDeckById(record.myDeckId);
               return (
                 <tr key={record.id} className="hover:bg-slate-800/30 transition-colors">
@@ -141,18 +147,28 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
                     </span>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                      onClick={() => {
-                        if (confirm('この対戦記録を削除しますか？')) {
-                          onDeleteRecord(record.id);
-                        }
-                      }}
-                    >
-                      削除
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="text-slate-300 hover:text-slate-100"
+                        onClick={() => onEditRecord(record)}
+                      >
+                        編集
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                        onClick={() => {
+                          if (confirm('この対戦記録を削除しますか？')) {
+                            onDeleteRecord(record.id);
+                          }
+                        }}
+                      >
+                        削除
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               );

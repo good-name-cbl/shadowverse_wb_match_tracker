@@ -20,6 +20,7 @@ interface MatchSectionProps {
     isWin: boolean;
   }) => void | Promise<void>;
   onDeleteRecord: (recordId: string) => void | Promise<void>;
+  onEditRecord: (record: MatchRecord) => void;
   isAddingRecord?: boolean;
 }
 
@@ -32,6 +33,7 @@ export const MatchSection: React.FC<MatchSectionProps> = ({
   onSelectDeck,
   onAddRecord,
   onDeleteRecord,
+  onEditRecord,
   isAddingRecord = false,
 }) => {
   return (
@@ -62,6 +64,7 @@ export const MatchSection: React.FC<MatchSectionProps> = ({
         records={records}
         decks={decks}
         onDeleteRecord={onDeleteRecord}
+        onEditRecord={onEditRecord}
       />
     </div>
   );
