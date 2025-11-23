@@ -23,143 +23,177 @@ export const DeckTypeStats: React.FC<DeckTypeStatsProps> = ({ stats }) => {
 
   if (stats.length === 0) {
     return (
-      <div className="glass-card rounded-xl p-8 text-center">
-        <h3 className="text-lg font-semibold text-slate-200 mb-4">
-          デッキタイプ別勝率
-        </h3>
-        <div className="py-8 text-slate-400">
-          対戦記録がありません
+      <div className="glass-card rounded-2xl p-12 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-900/50" />
+        <div className="relative z-10">
+          <div className="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-700/50">
+            <span className="text-3xl">🃏</span>
+          </div>
+          <h3 className="text-xl font-bold text-slate-200 mb-2">
+            デッキタイプ別データなし
+          </h3>
+          <p className="text-slate-400 max-w-md mx-auto">
+            対戦記録を追加すると、相手のデッキタイプごとの勝率や先攻・後攻別の詳細な分析が表示されます。
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="glass-card rounded-xl p-6">
-      <h3 className="text-lg font-semibold text-slate-200 mb-4 flex items-center">
-        <span className="mr-2">🃏</span>
-        デッキタイプ別勝率
+    <div className="glass-card rounded-2xl p-6">
+      <h3 className="text-xl font-bold text-slate-100 mb-6 flex items-center">
+        <span className="mr-3 text-2xl">🃏</span>
+        デッキタイプ別分析
       </h3>
 
-      <div className="space-y-3">
-        {stats.map((deckTypeStat) => (
-          <div key={deckTypeStat.deckType} className="border border-slate-700/50 rounded-xl overflow-hidden bg-slate-800/30">
+      <div className="space-y-4">
+        {stats.map((deckTypeStat) => {
+          const isExpanded = expandedDeckTypes.has(deckTypeStat.deckType);
+          return (
             <div
-              className="p-4 cursor-pointer hover:bg-slate-700/30 transition-colors"
-              onClick={() => toggleExpanded(deckTypeStat.deckType)}
+              key={deckTypeStat.deckType}
+              className={`border transition-all duration-300 rounded-xl overflow-hidden ${isExpanded
+                  ? 'bg-slate-800/40 border-violet-500/30 shadow-[0_0_15px_rgba(139,92,246,0.1)]'
+                  : 'bg-slate-800/20 border-slate-700/30 hover:bg-slate-800/40 hover:border-slate-600/50'
+                }`}
             >
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-sm font-medium text-slate-200">
-                      {deckTypeStat.deckType}
-                    </h4>
-                    <div className="flex items-center space-x-3 text-xs sm:text-sm">
-                      <span className="text-slate-400">
-                        {deckTypeStat.totalGames}戦
-                      </span>
-                      <span className="text-green-400">
-                        {deckTypeStat.wins}勝
-                      </span>
-                      <span className="text-red-400">
-                        {deckTypeStat.losses}敗
-                      </span>
-                      <span className={`font-bold ${getWinRateColor(deckTypeStat.winRate).replace('text-red-600', 'text-red-400').replace('text-green-600', 'text-green-400').replace('text-blue-600', 'text-blue-400')}`}>
-                        {deckTypeStat.winRate.toFixed(1)}%
-                      </span>
+              <div
+                className="p-5 cursor-pointer"
+                onClick={() => toggleExpanded(deckTypeStat.deckType)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <h4 className="text-lg font-bold text-slate-100">
+                          {deckTypeStat.deckType}
+                        </h4>
+                        <span className="px-2 py-0.5 rounded text-xs font-medium bg-slate-700/50 text-slate-300 border border-slate-600/50">
+                          {deckTypeStat.totalGames} Games
+                        </span>
+                      </div>
+
+                      <div className="flex items-center space-x-4">
+                        <div className="text-right hidden sm:block">
+                          <div className="text-xs text-slate-400 mb-0.5">Win Rate</div>
+                          <div className={`text-lg font-black ${getWinRateColor(deckTypeStat.winRate).replace('text-red-600', 'text-red-400').replace('text-green-600', 'text-green-400').replace('text-blue-600', 'text-blue-400')}`}>
+                            {deckTypeStat.winRate.toFixed(1)}%
+                          </div>
+                        </div>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-transform duration-300 bg-slate-700/30 ${isExpanded ? 'rotate-180 bg-violet-500/20 text-violet-300' : 'text-slate-400'}`}>
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="w-full bg-slate-700/30 rounded-full h-2 overflow-hidden flex">
+                      <div
+                        className="bg-green-500 h-full transition-all duration-500"
+                        style={{ width: `${deckTypeStat.winRate}%` }}
+                      />
+                      <div
+                        className="bg-red-500/50 h-full transition-all duration-500"
+                        style={{ width: `${100 - deckTypeStat.winRate}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between mt-1 text-xs font-medium">
+                      <span className="text-green-400">{deckTypeStat.wins} Wins</span>
+                      <span className="text-red-400">{deckTypeStat.losses} Losses</span>
                     </div>
                   </div>
-                  <div className="w-full bg-slate-700/50 rounded-full h-1.5 overflow-hidden">
-                    <div
-                      className="bg-gradient-to-r from-violet-500 to-fuchsia-500 h-1.5 rounded-full"
-                      style={{ width: `${deckTypeStat.winRate}%` }}
-                    />
-                  </div>
                 </div>
-                <div className="ml-4">
-                  <svg
-                    className={`w-5 h-5 text-slate-400 transform transition-transform ${expandedDeckTypes.has(deckTypeStat.deckType) ? 'rotate-180' : ''
-                      }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+              </div>
+
+              <div
+                className={`transition-all duration-300 ease-in-out overflow-hidden ${isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+              >
+                <div className="p-5 pt-0 border-t border-slate-700/30 bg-slate-900/20">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    {/* First Player Stats */}
+                    <div className="bg-gradient-to-br from-slate-800/50 to-slate-800/30 rounded-xl p-4 border border-slate-700/50 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-full blur-xl -mr-10 -mt-10 transition-opacity group-hover:opacity-100 opacity-50" />
+
+                      <div className="flex items-center justify-between mb-4">
+                        <h5 className="text-sm font-bold text-blue-300 flex items-center">
+                          <span className="w-2 h-2 rounded-full bg-blue-400 mr-2 shadow-[0_0_5px_rgba(96,165,250,0.5)]"></span>
+                          先攻 (1st)
+                        </h5>
+                        <span className="text-xs font-medium text-slate-400 bg-slate-700/30 px-2 py-1 rounded">
+                          {deckTypeStat.firstPlayerStats.totalGames} Games
+                        </span>
+                      </div>
+
+                      <div className="flex items-end justify-between mb-2">
+                        <div className="text-2xl font-black text-slate-200">
+                          {deckTypeStat.firstPlayerStats.totalGames > 0
+                            ? `${deckTypeStat.firstPlayerStats.winRate.toFixed(1)}%`
+                            : '-'
+                          }
+                        </div>
+                        <div className="text-xs text-slate-400 mb-1">
+                          <span className="text-green-400 font-bold">{deckTypeStat.firstPlayerStats.wins}W</span>
+                          <span className="mx-1">-</span>
+                          <span className="text-red-400 font-bold">{deckTypeStat.firstPlayerStats.losses}L</span>
+                        </div>
+                      </div>
+
+                      {deckTypeStat.firstPlayerStats.totalGames > 0 && (
+                        <div className="w-full bg-slate-700/50 rounded-full h-1.5 overflow-hidden">
+                          <div
+                            className="bg-blue-500 h-1.5 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.4)]"
+                            style={{ width: `${deckTypeStat.firstPlayerStats.winRate}%` }}
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Second Player Stats */}
+                    <div className="bg-gradient-to-br from-slate-800/50 to-slate-800/30 rounded-xl p-4 border border-slate-700/50 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/10 rounded-full blur-xl -mr-10 -mt-10 transition-opacity group-hover:opacity-100 opacity-50" />
+
+                      <div className="flex items-center justify-between mb-4">
+                        <h5 className="text-sm font-bold text-orange-300 flex items-center">
+                          <span className="w-2 h-2 rounded-full bg-orange-400 mr-2 shadow-[0_0_5px_rgba(251,146,60,0.5)]"></span>
+                          後攻 (2nd)
+                        </h5>
+                        <span className="text-xs font-medium text-slate-400 bg-slate-700/30 px-2 py-1 rounded">
+                          {deckTypeStat.secondPlayerStats.totalGames} Games
+                        </span>
+                      </div>
+
+                      <div className="flex items-end justify-between mb-2">
+                        <div className="text-2xl font-black text-slate-200">
+                          {deckTypeStat.secondPlayerStats.totalGames > 0
+                            ? `${deckTypeStat.secondPlayerStats.winRate.toFixed(1)}%`
+                            : '-'
+                          }
+                        </div>
+                        <div className="text-xs text-slate-400 mb-1">
+                          <span className="text-green-400 font-bold">{deckTypeStat.secondPlayerStats.wins}W</span>
+                          <span className="mx-1">-</span>
+                          <span className="text-red-400 font-bold">{deckTypeStat.secondPlayerStats.losses}L</span>
+                        </div>
+                      </div>
+
+                      {deckTypeStat.secondPlayerStats.totalGames > 0 && (
+                        <div className="w-full bg-slate-700/50 rounded-full h-1.5 overflow-hidden">
+                          <div
+                            className="bg-orange-500 h-1.5 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.4)]"
+                            style={{ width: `${deckTypeStat.secondPlayerStats.winRate}%` }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-
-            {expandedDeckTypes.has(deckTypeStat.deckType) && (
-              <div className="px-4 pb-4 border-t border-slate-700/50 bg-slate-900/30">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                  <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
-                    <h5 className="text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">先攻時</h5>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-400">
-                        {deckTypeStat.firstPlayerStats.totalGames}戦
-                      </span>
-                      <span className="text-green-400">
-                        {deckTypeStat.firstPlayerStats.wins}勝
-                      </span>
-                      <span className="text-red-400">
-                        {deckTypeStat.firstPlayerStats.losses}敗
-                      </span>
-                      <span className={`font-bold ${getWinRateColor(deckTypeStat.firstPlayerStats.winRate).replace('text-red-600', 'text-red-400').replace('text-green-600', 'text-green-400').replace('text-blue-600', 'text-blue-400')}`}>
-                        {deckTypeStat.firstPlayerStats.totalGames > 0
-                          ? `${deckTypeStat.firstPlayerStats.winRate.toFixed(1)}%`
-                          : '-'
-                        }
-                      </span>
-                    </div>
-                    {deckTypeStat.firstPlayerStats.totalGames > 0 && (
-                      <div className="mt-2 w-full bg-slate-700/50 rounded-full h-1 overflow-hidden">
-                        <div
-                          className="bg-green-500 h-1 rounded-full"
-                          style={{ width: `${deckTypeStat.firstPlayerStats.winRate}%` }}
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
-                    <h5 className="text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">後攻時</h5>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-400">
-                        {deckTypeStat.secondPlayerStats.totalGames}戦
-                      </span>
-                      <span className="text-green-400">
-                        {deckTypeStat.secondPlayerStats.wins}勝
-                      </span>
-                      <span className="text-red-400">
-                        {deckTypeStat.secondPlayerStats.losses}敗
-                      </span>
-                      <span className={`font-bold ${getWinRateColor(deckTypeStat.secondPlayerStats.winRate).replace('text-red-600', 'text-red-400').replace('text-green-600', 'text-green-400').replace('text-blue-600', 'text-blue-400')}`}>
-                        {deckTypeStat.secondPlayerStats.totalGames > 0
-                          ? `${deckTypeStat.secondPlayerStats.winRate.toFixed(1)}%`
-                          : '-'
-                        }
-                      </span>
-                    </div>
-                    {deckTypeStat.secondPlayerStats.totalGames > 0 && (
-                      <div className="mt-2 w-full bg-slate-700/50 rounded-full h-1 overflow-hidden">
-                        <div
-                          className="bg-orange-500 h-1 rounded-full"
-                          style={{ width: `${deckTypeStat.secondPlayerStats.winRate}%` }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

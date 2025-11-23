@@ -153,106 +153,142 @@ export default function PublicStatsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-500 mx-auto mb-4"></div>
-          <p className="text-slate-400">統計データを読み込み中...</p>
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-violet-900/20 via-slate-950 to-slate-950" />
+        <div className="text-center relative z-10">
+          <div className="relative w-16 h-16 mx-auto mb-4">
+            <div className="absolute inset-0 rounded-full border-4 border-slate-800" />
+            <div className="absolute inset-0 rounded-full border-4 border-t-violet-500 animate-spin" />
+          </div>
+          <p className="text-slate-400 animate-pulse">Loading Statistics...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-slate-950 relative overflow-x-hidden">
+      {/* Background Ambient Glow */}
+      <div className="fixed top-0 left-0 w-full h-[500px] bg-gradient-to-b from-violet-900/20 to-transparent pointer-events-none" />
+      <div className="fixed top-20 right-0 w-[600px] h-[600px] bg-fuchsia-500/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
+
       {/* Header */}
-      <header className="glass border-b border-white/5">
+      <header className="glass border-b border-white/5 sticky top-0 z-50 backdrop-blur-xl bg-slate-950/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <h1 className="text-xl font-bold bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-violet-400 via-fuchsia-400 to-white bg-clip-text text-transparent">
               Shadowverse Global Statistics
             </h1>
-            <Link href="/" className="text-sm text-slate-400 hover:text-violet-400 transition-colors">
-              ホームに戻る
+            <Link
+              href="/"
+              className="group flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-white/5 transition-all duration-300"
+            >
+              <span className="text-sm text-slate-400 group-hover:text-white transition-colors">ホームに戻る</span>
+              <svg className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
             </Link>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Info Card */}
-        <div className="glass rounded-xl border border-white/5 p-6 mb-6">
-          <h2 className="text-2xl font-bold text-slate-100 mb-2">
-            📈 全ユーザー統計
-          </h2>
-          <p className="text-slate-400 mb-4">
-            すべてのユーザーの対戦データを集計した統計情報です。
-          </p>
-          {lastUpdated && (
-            <p className="text-sm text-slate-500">
-              最終更新: {lastUpdated}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+          {/* Info Card */}
+          <div className="lg:col-span-8 glass-card rounded-2xl p-8 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl group-hover:bg-violet-500/20 transition-all duration-700" />
+            <h2 className="text-3xl font-black text-white mb-3 relative z-10">
+              Global Meta Report
+            </h2>
+            <p className="text-slate-400 text-lg mb-4 relative z-10 max-w-2xl">
+              全ユーザーの対戦データを集計した統計情報です。
+              現在のメタゲームを分析し、最適なデッキ選択に役立てましょう。
             </p>
-          )}
-        </div>
+            {lastUpdated && (
+              <div className="flex items-center space-x-2 text-sm text-slate-500 relative z-10">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span>Last updated: {lastUpdated}</span>
+              </div>
+            )}
+          </div>
 
-        {/* Season Filter */}
-        <div className="glass rounded-xl border border-white/5 p-4 mb-6">
-          <SeasonFilter
-            selectedSeasonId={selectedSeasonId}
-            onSeasonChange={setSelectedSeasonId}
-            storageKey="publicStatsSeasonId"
-          />
+          {/* Season Filter */}
+          <div className="lg:col-span-4 glass-card rounded-2xl p-6 flex flex-col justify-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-50" />
+            <div className="relative z-10">
+              <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center">
+                <span className="mr-2">📅</span> Target Season
+              </h3>
+              <SeasonFilter
+                selectedSeasonId={selectedSeasonId}
+                onSeasonChange={setSelectedSeasonId}
+                storageKey="publicStatsSeasonId"
+              />
+            </div>
+          </div>
         </div>
 
         {error ? (
-          <div className="glass rounded-xl border border-red-500/20 p-6">
-            <h3 className="text-red-400 font-semibold mb-2">エラーが発生しました</h3>
-            <p className="text-red-300">{error}</p>
+          <div className="glass-card rounded-2xl border border-red-500/20 p-8 text-center animate-in fade-in slide-in-from-top-2">
+            <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-red-400 mb-2">Failed to load statistics</h3>
+            <p className="text-slate-400 mb-6">{error}</p>
             <button
               onClick={() => {
                 setError(null);
                 fetchStats();
               }}
-              className="mt-4 px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:from-red-500 hover:to-red-400 transition-all"
+              className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors font-medium shadow-lg shadow-red-500/20"
             >
-              再試行
+              Retry
             </button>
           </div>
         ) : statsData.length === 0 ? (
-          <div className="glass rounded-xl border border-white/5 p-12 text-center">
-            <p className="text-slate-300 text-lg">
-              まだ統計データがありません。
-            </p>
-            <p className="text-slate-500 text-sm mt-2">
-              対戦データが登録されると、ここに統計情報が表示されます。
+          <div className="glass-card rounded-2xl p-12 text-center animate-in fade-in slide-in-from-top-2">
+            <div className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6 border border-slate-700/50">
+              <span className="text-4xl">📊</span>
+            </div>
+            <h3 className="text-xl font-bold text-slate-200 mb-2">No Data Available</h3>
+            <p className="text-slate-400">
+              まだ統計データがありません。対戦データが登録されると、ここに統計情報が表示されます。
             </p>
           </div>
         ) : (
           <>
             {/* Tab Navigation */}
-            <div className="glass rounded-xl p-1 border border-white/5 mb-6">
-              <nav className="flex space-x-1">
+            <div className="glass-card rounded-2xl p-2 mb-8 sticky top-20 z-40 backdrop-blur-xl bg-slate-900/80 border border-white/10 shadow-xl">
+              <nav className="flex space-x-2 overflow-x-auto no-scrollbar">
                 {tabButtons.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 flex flex-col items-center justify-center px-2 py-3 text-xs sm:text-sm font-medium rounded-lg transition-all duration-200 ${
-                      activeTab === tab.id
-                        ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg shadow-violet-900/20'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                    }`}
+                    className={`flex-1 min-w-[100px] flex flex-col items-center justify-center px-4 py-3 rounded-xl transition-all duration-300 relative overflow-hidden group ${activeTab === tab.id
+                        ? 'text-white shadow-lg'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                      }`}
                   >
-                    <span className="text-xl sm:text-lg mb-1">{tab.icon}</span>
-                    <span className="text-xs sm:text-sm leading-tight">{tab.label}</span>
+                    {activeTab === tab.id && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-fuchsia-600 opacity-100" />
+                    )}
+                    <span className="text-2xl mb-1 relative z-10 transform transition-transform group-hover:scale-110 duration-300">{tab.icon}</span>
+                    <span className="text-xs sm:text-sm font-bold relative z-10">{tab.label}</span>
                   </button>
                 ))}
               </nav>
             </div>
 
             {/* Tab Content */}
-            {activeTab === 'class' && <ClassStatsPublic stats={classStats} />}
-            {activeTab === 'deck' && <DeckStatsPublic stats={deckStats} />}
-            {activeTab === 'matchup' && <MatchupMatrix stats={matchupStats} />}
-            {activeTab === 'turnOrder' && <TurnOrderStats stats={turnOrderStats} />}
+            <div className="animate-in fade-in slide-in-from-top-2 duration-500">
+              {activeTab === 'class' && <ClassStatsPublic stats={classStats} />}
+              {activeTab === 'deck' && <DeckStatsPublic stats={deckStats} />}
+              {activeTab === 'matchup' && <MatchupMatrix stats={matchupStats} />}
+              {activeTab === 'turnOrder' && <TurnOrderStats stats={turnOrderStats} />}
+            </div>
           </>
         )}
       </div>

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { CLASS_COLORS, getWinRateColor, CLASSES } from '@/utils/constants';
 import { ClassType } from '@/types';
+import { Select } from '@/components/ui/Select';
 
 interface AggregatedStats {
   statsType: string;
@@ -44,161 +45,163 @@ export const DeckStatsPublic: React.FC<DeckStatsPublicProps> = ({ stats }) => {
   return (
     <div className="space-y-6">
       {/* Explanation Card */}
-      <div className="glass-card rounded-xl p-6 bg-green-500/5 border border-green-500/20">
-        <div className="flex items-start space-x-3">
-          <span className="text-2xl">ℹ️</span>
+      <div className="glass-card rounded-2xl p-6 relative overflow-hidden group">
+        <div className="absolute top-0 left-0 w-1 h-full bg-green-500" />
+        <div className="absolute inset-0 bg-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="flex items-start space-x-4 relative z-10">
+          <div className="p-3 bg-green-500/10 rounded-xl">
+            <span className="text-2xl">ℹ️</span>
+          </div>
           <div>
-            <h3 className="text-lg font-semibold text-green-300 mb-2">
+            <h3 className="text-lg font-bold text-green-300 mb-2 flex items-center">
               この統計について
             </h3>
-            <p className="text-slate-300 text-sm leading-relaxed">
-              <strong className="text-green-400">対戦相手が使用したデッキ</strong>の統計です。
-              テンプレート登録されたデッキと、登録外のデッキ（「その他（クラス名）」）の
-              使用率や勝率を確認できます。
-            </p>
-            <p className="text-slate-400 text-xs mt-2">
-              ※ 自分が使用したデッキは含まれません
+            <p className="text-slate-300 text-sm leading-relaxed max-w-3xl">
+              <strong className="text-green-400 font-medium">対戦相手が使用したデッキ</strong>の統計データです。
+              テンプレート登録された主要デッキや、その他のデッキの使用率・勝率を確認できます。
+              <br className="hidden sm:block" />
+              <span className="text-slate-500 text-xs mt-1 block">
+                ※ 自分が使用したデッキの統計ではなく、対戦相手のデッキ分布を示しています。
+              </span>
             </p>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="glass-card rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-slate-100 mb-4">
-          フィルター
+      <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 opacity-50" />
+        <h3 className="text-lg font-bold text-slate-200 mb-4 flex items-center">
+          <span className="mr-2">🔍</span> フィルター & 並び替え
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Class Filter */}
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">
-              クラス
-            </label>
-            <select
-              value={selectedClass}
-              onChange={(e) => setSelectedClass(e.target.value as ClassType | 'all')}
-              className="w-full px-3 py-2 glass-input rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-slate-200"
-            >
-              <option value="all" className="bg-slate-900 text-slate-200">すべて</option>
-              {CLASSES.map((cls) => (
-                <option key={cls} value={cls} className="bg-slate-900 text-slate-200">
-                  {cls}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            label="クラス"
+            value={selectedClass}
+            onChange={(e) => setSelectedClass(e.target.value as ClassType | 'all')}
+            options={[
+              { value: 'all', label: 'すべてのクラス' },
+              ...CLASSES.map(cls => ({ value: cls, label: cls }))
+            ]}
+          />
 
           {/* Sort By */}
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">
-              並び順
-            </label>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'usage' | 'winRate')}
-              className="w-full px-3 py-2 glass-input rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-slate-200"
-            >
-              <option value="usage" className="bg-slate-900 text-slate-200">使用率順</option>
-              <option value="winRate" className="bg-slate-900 text-slate-200">勝率順</option>
-            </select>
-          </div>
+          <Select
+            label="並び順"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'usage' | 'winRate')}
+            options={[
+              { value: 'usage', label: '使用率順' },
+              { value: 'winRate', label: '勝率順' }
+            ]}
+          />
 
           {/* Min Games (for win rate sort) */}
           {sortBy === 'winRate' && (
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
-                最低試合数
-              </label>
-              <select
-                value={minGames}
-                onChange={(e) => setMinGames(Number(e.target.value))}
-                className="w-full px-3 py-2 glass-input rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-slate-200"
-              >
-                <option value={5} className="bg-slate-900 text-slate-200">5試合以上</option>
-                <option value={10} className="bg-slate-900 text-slate-200">10試合以上</option>
-                <option value={20} className="bg-slate-900 text-slate-200">20試合以上</option>
-                <option value={50} className="bg-slate-900 text-slate-200">50試合以上</option>
-              </select>
-            </div>
+            <Select
+              label="最低試合数"
+              value={String(minGames)}
+              onChange={(e) => setMinGames(Number(e.target.value))}
+              options={[
+                { value: '5', label: '5試合以上' },
+                { value: '10', label: '10試合以上' },
+                { value: '20', label: '20試合以上' },
+                { value: '50', label: '50試合以上' }
+              ]}
+            />
           )}
         </div>
       </div>
 
       {/* Stats List */}
-      <div className="glass-card rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-slate-100 mb-4">
-          {sortBy === 'usage' ? '📊 デッキ使用率 TOP20' : '🏆 デッキ勝率 TOP20'}
-          {sortBy === 'winRate' && (
-            <span className="text-sm text-slate-500 ml-2">
-              （{minGames}試合以上）
+      <div className="space-y-4">
+        <div className="flex items-center justify-between px-2">
+          <h3 className="text-xl font-bold text-white flex items-center">
+            <span className="mr-2">{sortBy === 'usage' ? '📊' : '🏆'}</span>
+            {sortBy === 'usage' ? 'デッキ使用率ランキング' : 'デッキ勝率ランキング'}
+            <span className="text-sm font-normal text-slate-500 ml-3 bg-slate-800/50 px-2 py-1 rounded-full">
+              TOP 20
             </span>
-          )}
-        </h3>
+          </h3>
+        </div>
 
         {topStats.length === 0 ? (
-          <p className="text-slate-500 text-center py-8">
-            該当するデータがありません
-          </p>
+          <div className="glass-card rounded-2xl p-12 text-center">
+            <p className="text-slate-500">該当するデータがありません</p>
+          </div>
         ) : (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 gap-4">
             {topStats.map((stat, index) => {
               const className = stat.metadata?.className || '';
               const deckName = stat.metadata?.deckName || stat.statsKey;
-              const classColor = CLASS_COLORS[className as keyof typeof CLASS_COLORS] || '#6B7280';
+              const classColor = CLASS_COLORS[className as keyof typeof CLASS_COLORS] || 'bg-slate-500';
+              const winRateColor = getWinRateColor(stat.winRate);
 
               return (
                 <div
                   key={stat.statsKey}
-                  className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-4 hover:bg-slate-800/50 transition-colors"
+                  className="glass-card rounded-xl p-5 relative overflow-hidden group hover:scale-[1.01] transition-all duration-300 border border-white/5 hover:border-white/10"
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-3 flex-1 min-w-0">
-                      <span className="text-xl font-bold text-slate-600">
-                        #{index + 1}
-                      </span>
+                  {/* Background Gradient based on Class */}
+                  <div className={`absolute top-0 right-0 w-64 h-64 opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 transition-opacity group-hover:opacity-10 ${classColor.replace('bg-', 'bg-')}`} />
+
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+                    {/* Rank & Deck Info */}
+                    <div className="flex items-center space-x-4 flex-1">
+                      <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-slate-800/50 rounded-xl border border-white/5 shadow-inner">
+                        <span className={`text-xl font-black ${index < 3 ? 'text-yellow-400' : 'text-slate-500'}`}>
+                          #{index + 1}
+                        </span>
+                      </div>
+
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center space-x-2 mb-1">
-                          <span
-                            className="px-2 py-0.5 rounded text-white text-xs font-medium flex-shrink-0 shadow-sm"
-                            style={{ backgroundColor: classColor }}
-                          >
+                          <span className={`w-2 h-2 rounded-full ${classColor}`} />
+                          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                             {className}
                           </span>
                         </div>
-                        <p className="font-semibold text-slate-200 truncate">
+                        <h4 className="text-lg font-bold text-slate-100 truncate group-hover:text-white transition-colors">
                           {deckName}
-                        </p>
+                        </h4>
                       </div>
                     </div>
-                    <div className="text-right ml-4">
-                      <p className="text-sm text-slate-400">
-                        {sortBy === 'usage' ? '試合数' : '勝率'}
-                      </p>
-                      <p className={`text-xl font-bold ${sortBy === 'usage' ? 'text-slate-200' : getWinRateColor(stat.winRate)
-                        }`}>
-                        {sortBy === 'usage'
-                          ? stat.totalGames.toLocaleString()
-                          : `${stat.winRate.toFixed(1)}%`
-                        }
-                      </p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2 text-sm">
-                    <div>
-                      <p className="text-slate-400">試合数</p>
-                      <p className="font-semibold text-slate-200">{stat.totalGames.toLocaleString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-400">勝率</p>
-                      <p className={`font-semibold ${getWinRateColor(stat.winRate)}`}>
-                        {stat.winRate.toFixed(1)}%
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-slate-400">勝数/敗数</p>
-                      <p className="font-semibold text-slate-200">
-                        {stat.wins}勝{stat.losses}敗
-                      </p>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-3 gap-8 md:w-1/2">
+                      {/* Games */}
+                      <div className="text-center md:text-right">
+                        <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">試合数</p>
+                        <p className="text-xl font-bold text-slate-200">{stat.totalGames.toLocaleString()}</p>
+                      </div>
+
+                      {/* Win Rate */}
+                      <div className="text-center md:text-right">
+                        <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">勝率</p>
+                        <div className="flex flex-col items-end">
+                          <p className={`text-xl font-black ${winRateColor.replace('text-red-600', 'text-red-400').replace('text-green-600', 'text-green-400').replace('text-blue-600', 'text-blue-400')}`}>
+                            {stat.winRate.toFixed(1)}%
+                          </p>
+                          <div className="w-full md:w-24 h-1 bg-slate-800 rounded-full mt-1 overflow-hidden">
+                            <div
+                              className={`h-full rounded-full ${stat.winRate >= 50 ? 'bg-green-500' : 'bg-red-500'
+                                }`}
+                              style={{ width: `${stat.winRate}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Record */}
+                      <div className="text-center md:text-right">
+                        <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">戦績</p>
+                        <p className="text-lg font-medium text-slate-300">
+                          <span className="text-green-400 font-bold">{stat.wins}</span>
+                          <span className="text-slate-600 mx-1">-</span>
+                          <span className="text-red-400 font-bold">{stat.losses}</span>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
