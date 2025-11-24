@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/Button';
+import ClassIcon from '@/components/ui/ClassIcon';
 import { MatchRecord, Deck } from '@/types';
-import { CLASS_COLORS } from '@/utils/constants';
 import { MatchHistoryMobile } from './MatchHistoryMobile';
 
 interface MatchHistoryProps {
@@ -103,10 +103,7 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
                   <td className="px-4 py-4 whitespace-nowrap">
                     {deck ? (
                       <div className="flex items-center space-x-2">
-                        <div
-                          className={`w-2.5 h-2.5 rounded-full shadow-[0_0_8px_currentColor] ${CLASS_COLORS[deck.className].replace('bg-', 'text-').replace('text-white', '')}`}
-                          style={{ backgroundColor: 'currentColor' }}
-                        />
+                        <ClassIcon className={deck.className} size="small" />
                         <span className="text-sm text-slate-200">
                           {deck.deckName}
                         </span>
@@ -119,17 +116,9 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
                     <div className="flex items-center space-x-2">
-                      <div
-                        className={`w-2.5 h-2.5 rounded-full shadow-[0_0_8px_currentColor] ${CLASS_COLORS[record.opponentClass].replace('bg-', 'text-').replace('text-white', '')}`}
-                        style={{ backgroundColor: 'currentColor' }}
-                      />
-                      <div>
-                        <div className="text-sm text-slate-200">
-                          {record.opponentDeckType}
-                        </div>
-                        <div className="text-xs text-slate-500">
-                          {record.opponentClass}
-                        </div>
+                      <ClassIcon className={record.opponentClass} size="small" showLabel />
+                      <div className="text-sm text-slate-200">
+                        {record.opponentDeckType}
                       </div>
                     </div>
                   </td>

@@ -20,6 +20,16 @@ export const CLASS_COLORS: Record<ClassType, string> = {
   'ネメシス': 'bg-indigo-500'
 };
 
+export const CLASS_ICON_PATHS: Record<ClassType, string> = {
+  'エルフ': '/images/class-icons/class_elf.svg',
+  'ロイヤル': '/images/class-icons/class_royal.svg',
+  'ウィッチ': '/images/class-icons/class_witch.svg',
+  'ドラゴン': '/images/class-icons/class_dragon.svg',
+  'ナイトメア': '/images/class-icons/class_nightmare.svg',
+  'ビショップ': '/images/class-icons/class_bishop.svg',
+  'ネメシス': '/images/class-icons/class_nemesis.svg'
+};
+
 export const WINRATE_COLORS = {
   high: 'text-green-600',
   medium: 'text-yellow-600',

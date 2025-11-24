@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import ClassIcon from '@/components/ui/ClassIcon';
 import { useAuth } from '@/contexts/AuthContext';
 import { isAdmin } from '@/utils/auth';
 import { Button } from '@/components/ui/Button';
 import { DeleteAccountModal } from '@/components/settings/DeleteAccountModal';
+import { ClassType } from '@/types';
 
 interface HeaderProps {
   currentDeck?: { className: string; deckName: string } | null;
@@ -29,13 +31,16 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
               Shadowverse Record
             </h1>
             {currentDeck && (
-              <div className="hidden sm:block bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full backdrop-blur-sm">
-                <span className="text-sm text-slate-300">
-                  <span className="text-slate-500 mr-2">使用中</span>
-                  <span className="font-medium text-violet-300">{currentDeck.className}</span>
-                  <span className="mx-2 text-slate-600">|</span>
-                  <span className="text-slate-200">{currentDeck.deckName}</span>
-                </span>
+              <div className="hidden sm:flex items-center gap-2 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full backdrop-blur-sm">
+                <span className="text-sm text-slate-500">使用中</span>
+                <ClassIcon
+                  className={currentDeck.className as ClassType}
+                  size="small"
+                  showLabel
+                  labelClassName="font-medium text-violet-300"
+                />
+                <span className="text-slate-600">|</span>
+                <span className="text-sm text-slate-200">{currentDeck.deckName}</span>
               </div>
             )}
           </div>
@@ -96,12 +101,15 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
         {/* モバイル版の追加情報 */}
         <div className="sm:hidden pb-3 flex items-center justify-between border-t border-white/5 pt-3">
           {currentDeck && (
-            <div className="bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full backdrop-blur-sm">
-              <span className="text-xs text-slate-300">
-                <span className="font-medium text-violet-300">{currentDeck.className}</span>
-                <span className="mx-1 text-slate-600">-</span>
-                {currentDeck.deckName}
-              </span>
+            <div className="flex items-center gap-1.5 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full backdrop-blur-sm">
+              <ClassIcon
+                className={currentDeck.className as ClassType}
+                size="small"
+                showLabel
+                labelClassName="font-medium text-violet-300 text-xs"
+              />
+              <span className="text-xs text-slate-600">-</span>
+              <span className="text-xs text-slate-300">{currentDeck.deckName}</span>
             </div>
           )}
           <div className="flex items-center space-x-2 ml-auto">

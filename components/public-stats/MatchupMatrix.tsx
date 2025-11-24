@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import ClassIcon from '@/components/ui/ClassIcon';
 import { CLASS_COLORS, CLASSES, getWinRateColor } from '@/utils/constants';
 import { ClassType } from '@/types';
 import { Select } from '@/components/ui/Select';
@@ -125,7 +126,7 @@ export const MatchupMatrix: React.FC<MatchupMatrixProps> = ({ stats }) => {
                     className="p-3 text-xs font-bold text-slate-300 uppercase tracking-wider rounded-lg border border-white/5 min-w-[80px]"
                     style={{ backgroundColor: CLASS_COLORS[cls] + '20' }}
                   >
-                    {cls}
+                    <ClassIcon className={cls} size="small" showLabel />
                   </th>
                 ))}
               </tr>
@@ -137,7 +138,7 @@ export const MatchupMatrix: React.FC<MatchupMatrixProps> = ({ stats }) => {
                     className="p-3 text-xs font-bold text-left text-slate-300 uppercase tracking-wider rounded-lg border border-white/5 sticky left-0 z-10 backdrop-blur-md"
                     style={{ backgroundColor: CLASS_COLORS[myClass] + '40' }}
                   >
-                    {myClass}
+                    <ClassIcon className={myClass} size="small" showLabel />
                   </th>
                   {CLASSES.map((opponentClass) => {
                     const data = getMatchupData(myClass, opponentClass);

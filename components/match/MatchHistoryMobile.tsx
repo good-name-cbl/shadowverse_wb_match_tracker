@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/Button';
+import ClassIcon from '@/components/ui/ClassIcon';
 import { MatchRecord, Deck } from '@/types';
-import { CLASS_COLORS } from '@/utils/constants';
 
 interface MatchHistoryMobileProps {
   records: MatchRecord[];
@@ -60,10 +60,7 @@ export const MatchHistoryMobile: React.FC<MatchHistoryMobileProps> = ({
                 <span className="text-xs text-slate-500 font-medium">使用デッキ</span>
                 {deck ? (
                   <div className="flex items-center space-x-2">
-                    <div
-                      className={`w-2.5 h-2.5 rounded-full shadow-[0_0_8px_currentColor] ${CLASS_COLORS[deck.className].replace('bg-', 'text-').replace('text-white', '')}`}
-                      style={{ backgroundColor: 'currentColor' }}
-                    />
+                    <ClassIcon className={deck.className} size="small" />
                     <span className="text-sm text-slate-200">
                       {deck.deckName}
                     </span>
@@ -78,10 +75,7 @@ export const MatchHistoryMobile: React.FC<MatchHistoryMobileProps> = ({
               <div className="flex items-center justify-between">
                 <span className="text-xs text-slate-500 font-medium">相手</span>
                 <div className="flex items-center space-x-2">
-                  <div
-                    className={`w-2.5 h-2.5 rounded-full shadow-[0_0_8px_currentColor] ${CLASS_COLORS[record.opponentClass].replace('bg-', 'text-').replace('text-white', '')}`}
-                    style={{ backgroundColor: 'currentColor' }}
-                  />
+                  <ClassIcon className={record.opponentClass} size="small" showLabel />
                   <span className="text-sm text-slate-200">
                     {record.opponentDeckType}
                   </span>

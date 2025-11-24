@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
+import ClassIcon from '@/components/ui/ClassIcon';
 import { ClassStatistics } from '@/types';
-import { CLASS_COLORS, getWinRateColor } from '@/utils/constants';
+import { getWinRateColor } from '@/utils/constants';
 
 interface ClassStatsMobileProps {
   stats: ClassStatistics[];
@@ -14,15 +15,12 @@ export const ClassStatsMobile: React.FC<ClassStatsMobileProps> = ({ stats }) => 
       {stats.map((classStat) => (
         <div key={classStat.className} className="glass-card rounded-xl p-4 border border-slate-700/50">
           <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-2">
-              <div
-                className={`w-3 h-3 rounded-full shadow-[0_0_8px_currentColor] ${CLASS_COLORS[classStat.className].replace('bg-', 'text-').replace('text-white', '')}`}
-                style={{ backgroundColor: 'currentColor' }}
-              />
-              <span className="text-sm font-medium text-slate-200">
-                {classStat.className}
-              </span>
-            </div>
+            <ClassIcon
+              className={classStat.className}
+              size="medium"
+              showLabel
+              labelClassName="text-slate-200 font-medium"
+            />
             {classStat.totalGames > 0 && (
               <span className={`text-sm font-bold ${getWinRateColor(classStat.winRate).replace('text-red-600', 'text-red-400').replace('text-green-600', 'text-green-400').replace('text-blue-600', 'text-blue-400')}`}>
                 {classStat.winRate.toFixed(1)}%

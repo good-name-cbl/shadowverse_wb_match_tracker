@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { CLASS_COLORS, getWinRateColor, CLASSES } from '@/utils/constants';
+import { getWinRateColor, CLASSES, CLASS_COLORS } from '@/utils/constants';
 import { ClassType } from '@/types';
 import { Select } from '@/components/ui/Select';
 

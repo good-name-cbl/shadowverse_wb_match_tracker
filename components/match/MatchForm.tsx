@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { RadioGroup } from '@/components/ui/RadioGroup';
 import { Button } from '@/components/ui/Button';
+import ClassIcon from '@/components/ui/ClassIcon';
 import { ClassType, Deck } from '@/types';
 import { CLASSES } from '@/utils/constants';
 import { DeckTemplateSelector } from '../deck/DeckTemplateSelector';
@@ -103,10 +104,11 @@ export const MatchForm: React.FC<MatchFormProps> = ({
       </h3>
 
       <div className="mb-6 p-4 bg-violet-500/10 border border-violet-500/20 rounded-xl">
-        <span className="text-sm text-violet-200 flex items-center">
-          <span className="bg-violet-500/20 px-2 py-0.5 rounded text-xs mr-2 border border-violet-500/30">使用中</span>
-          {currentDeck.className} - {currentDeck.deckName}
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="bg-violet-500/20 px-2 py-0.5 rounded text-xs border border-violet-500/30 text-violet-200">使用中</span>
+          <ClassIcon className={currentDeck.className} size="medium" showLabel labelClassName="text-violet-200" />
+          <span className="text-sm text-violet-200">- {currentDeck.deckName}</span>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">

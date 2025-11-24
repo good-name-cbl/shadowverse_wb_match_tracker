@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
+import ClassIcon from '@/components/ui/ClassIcon';
 import { ClassStatistics } from '@/types';
-import { CLASS_COLORS, getWinRateColor } from '@/utils/constants';
+import { getWinRateColor } from '@/utils/constants';
 import { ClassStatsMobile } from './ClassStatsMobile';
 
 interface ClassStatsProps {
@@ -50,18 +51,12 @@ export const ClassStats: React.FC<ClassStatsProps> = ({ stats }) => {
             {stats.map((classStat) => (
               <tr key={classStat.className} className="group hover:bg-slate-700/20 transition-all duration-200">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center space-x-3">
-                    <div className="relative">
-                      <div
-                        className={`w-3 h-3 rounded-full shadow-[0_0_8px_currentColor] ${CLASS_COLORS[classStat.className].replace('bg-', 'text-').replace('text-white', '')}`}
-                        style={{ backgroundColor: 'currentColor' }}
-                      />
-                      <div className={`absolute inset-0 w-3 h-3 rounded-full animate-ping opacity-20 ${CLASS_COLORS[classStat.className].replace('bg-', 'text-').replace('text-white', '')}`} style={{ backgroundColor: 'currentColor' }} />
-                    </div>
-                    <span className="text-sm font-bold text-slate-200 group-hover:text-white transition-colors">
-                      {classStat.className}
-                    </span>
-                  </div>
+                  <ClassIcon
+                    className={classStat.className}
+                    size="medium"
+                    showLabel
+                    labelClassName="text-slate-200 group-hover:text-white transition-colors font-bold"
+                  />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-center">
                   <span className="text-sm font-medium text-slate-300 bg-slate-800/50 px-2.5 py-1 rounded-md border border-slate-700/50">

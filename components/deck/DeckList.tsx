@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/Button';
+import ClassIcon from '@/components/ui/ClassIcon';
 import { Deck } from '@/types';
-import { CLASS_COLORS } from '@/utils/constants';
 
 interface DeckListProps {
   decks: Deck[];
@@ -49,18 +49,15 @@ export const DeckList: React.FC<DeckListProps> = ({
               }`}
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div
-                  className={`w-3 h-3 rounded-full shadow-[0_0_8px_currentColor] ${CLASS_COLORS[deck.className].replace('bg-', 'text-').replace('text-white', '')}`}
-                  style={{ backgroundColor: 'currentColor' }}
+              <div className="flex items-center space-x-3">
+                <ClassIcon
+                  className={deck.className}
+                  size="small"
+                  showLabel
+                  labelClassName="text-slate-400"
                 />
-                <div>
-                  <div className={`font-medium ${currentDeckId === deck.id ? 'text-violet-200' : 'text-slate-200'}`}>
-                    {deck.deckName}
-                  </div>
-                  <div className="text-xs text-slate-500 mt-0.5">
-                    {deck.className}
-                  </div>
+                <div className={`font-medium ${currentDeckId === deck.id ? 'text-violet-200' : 'text-slate-200'}`}>
+                  {deck.deckName}
                 </div>
               </div>
 

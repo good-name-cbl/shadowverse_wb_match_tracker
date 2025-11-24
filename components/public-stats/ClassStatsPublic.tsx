@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
-import { CLASS_COLORS, getWinRateColor } from '@/utils/constants';
+import ClassIcon from '@/components/ui/ClassIcon';
+import { getWinRateColor } from '@/utils/constants';
+import { ClassType } from '@/types';
 
 interface AggregatedStats {
   statsType: string;
@@ -94,7 +96,6 @@ export const ClassStatsPublic: React.FC<ClassStatsPublicProps> = ({ stats }) => 
             <tbody className="divide-y divide-white/5">
               {statsByUsage.map((stat, index) => {
                 const usageRate = totalGames > 0 ? (stat.totalGames / totalGames) * 100 : 0;
-                const classColor = CLASS_COLORS[stat.statsKey as keyof typeof CLASS_COLORS] || 'bg-slate-500';
                 const winRateColor = getWinRateColor(stat.winRate);
 
                 return (
@@ -105,8 +106,12 @@ export const ClassStatsPublic: React.FC<ClassStatsPublicProps> = ({ stats }) => 
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-3">
                         <span className="text-slate-500 font-mono text-sm w-4">#{index + 1}</span>
-                        <div className={`w-2 h-8 rounded-full ${classColor} shadow-[0_0_10px_rgba(0,0,0,0.3)]`} />
-                        <span className="font-bold text-slate-200 text-lg">{stat.statsKey}</span>
+                        <ClassIcon
+                          className={stat.statsKey as ClassType}
+                          size="large"
+                          showLabel
+                          labelClassName="font-bold text-slate-200 text-lg"
+                        />
                       </div>
                     </td>
                     <td className="px-6 py-4">
