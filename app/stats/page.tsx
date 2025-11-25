@@ -9,6 +9,7 @@ import { DeckStatsPublic } from '@/components/public-stats/DeckStatsPublic';
 import { MatchupMatrix } from '@/components/public-stats/MatchupMatrix';
 import { TurnOrderStats } from '@/components/public-stats/TurnOrderStats';
 import { SeasonFilter } from '@/components/stats/SeasonFilter';
+import { Footer } from '@/components/layout/Footer';
 import outputs from '@/amplify_outputs.json';
 
 const client = generateClient<Schema>();
@@ -292,6 +293,8 @@ export default function PublicStatsPage() {
           </>
         )}
       </div>
+
+      <Footer />
     </div>
   );
 }

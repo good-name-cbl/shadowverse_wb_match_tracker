@@ -1,5 +1,6 @@
 import React from 'react';
 import { AuthContainer } from '../auth/AuthContainer';
+import { Footer } from '../layout/Footer';
 
 export const LandingPage: React.FC = () => {
   const scrollToAuth = () => {
@@ -123,9 +124,7 @@ export const LandingPage: React.FC = () => {
         </section>
       </main>
 
-      <footer className="py-8 text-center text-slate-500 text-sm border-t border-white/5">
-        <p>&copy; {new Date().getFullYear()} Shadowverse Record. All rights reserved.</p>
-      </footer>
+      <Footer />
     </div>
   );
 };
