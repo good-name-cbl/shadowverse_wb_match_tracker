@@ -6,7 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **Shadowverse Worlds Beyond match tracking application** built with Next.js 14 (App Router), TypeScript, Tailwind CSS, and AWS Amplify Gen2. The app allows users to manage decks, record match results, and view detailed statistics about their gameplay.
 
-**Current State**: The app uses LocalStorage for data persistence. AWS Amplify backend (Cognito, AppSync, DynamoDB) is configured but not yet integrated into the frontend.
+**Current State**: The app supports **hybrid data storage**:
+- **Guest mode (not logged in)**: Data is stored in LocalStorage, all features available
+- **Authenticated mode**: Data is stored in DynamoDB via AppSync GraphQL API
+- **Data migration**: When logging in, users can migrate LocalStorage data to DynamoDB
 
 ## Development Commands
 
@@ -34,12 +37,13 @@ The application follows a **4-layer architecture**:
 ┌─────────────────────────────────┐
 │  Presentation Layer             │  ← React components (components/*)
 ├─────────────────────────────────┤
-│  State Management Layer         │  ← Context API + useLocalStorage
+│  State Management Layer         │  ← Context API + useState + Amplify Data
 ├─────────────────────────────────┤
 │  Business Logic Layer           │  ← Utils (statistics, templates)
 ├─────────────────────────────────┤
-│  Data Layer                     │  ← LocalStorage (current)
-│                                 │    DynamoDB (future)
+│  Data Layer                     │  ← LocalStorage (guest mode)
+│                                 │    DynamoDB (authenticated mode)
+│                                 │    Cognito (authentication)
 └─────────────────────────────────┘
 ```
 
@@ -48,11 +52,11 @@ The application follows a **4-layer architecture**:
 1. **Unidirectional Data Flow**: Data flows from `app/page.tsx` down to child components via props. Child components call handler functions to update state in the parent.
 
 2. **State Management**:
-   - **Global State**: Authentication state managed via `AuthContext` (React Context)
-   - **Page-Local State**: Decks, match records, and current deck managed in `app/page.tsx` using `useLocalStorage` hook
+   - **Global State**: Authentication state managed via `AuthContext` (React Context) with AWS Cognito
+   - **Page-Local State**: Decks, match records, and current deck managed in `app/page.tsx` using `useState`, loaded from DynamoDB on mount
    - **Component-Local State**: Form inputs and UI state managed with `useState` in individual components
 
-3. **LocalStorage Synchronization**: The `useLocalStorage` hook automatically syncs React state with browser LocalStorage for data persistence across sessions.
+3. **Hybrid Data Management**: The `useHybridData` hook automatically switches between LocalStorage (guest) and DynamoDB (authenticated) based on authentication state. All CRUD operations are performed through the appropriate data source with optimistic UI updates.
 
 4. **Performance Optimization**: Heavy statistics calculations use `useMemo` to prevent unnecessary recalculations (see `StatsSection`).
 
@@ -61,13 +65,13 @@ The application follows a **4-layer architecture**:
 ### Application Startup
 ```
 app/layout.tsx
-  ↓ Wraps with <AuthProvider>
+  ↓ Wraps with <AuthProvider> + <Authenticator.Provider>
 contexts/AuthContext.tsx
-  ↓ Loads saved user from LocalStorage
+  ↓ Checks Cognito session via getCurrentUser() and fetchAuthSession()
 app/page.tsx
-  ↓ Checks authentication
+  ↓ Checks authentication state
   ├─ Not authenticated → <AuthPage>
-  └─ Authenticated → Main app (DeckSection, MatchSection, StatsSection)
+  └─ Authenticated → Fetches decks/records from DynamoDB → Main app
 ```
 
 ### Data Relationships
@@ -80,10 +84,12 @@ Deck (1) ── MatchRecord (many)
 ```
 
 ### Critical State in app/page.tsx
-- `decks`: Array of user's registered decks (persisted to LocalStorage)
-- `records`: Array of match records (persisted to LocalStorage)
-- `currentDeckId`: ID of the currently selected deck (persisted to LocalStorage)
+- `decks`: Array of user's registered decks (fetched from DynamoDB, managed with `useState`)
+- `records`: Array of match records (fetched from DynamoDB, managed with `useState`)
+- `currentDeckId`: ID of the currently selected deck (component state)
 - `activeTab`: Current tab ('decks' | 'matches' | 'stats')
+- `seasons`: Array of seasons (fetched from DynamoDB)
+- `currentSeasonId`: ID of the currently selected season
 
 ## Important Component Hierarchies
 
@@ -118,8 +124,12 @@ app/page.tsx (data owner)
 - `types/index.ts`: All TypeScript type definitions (ClassType, User, Deck, MatchRecord, Statistics types)
 
 ### State Management
-- `contexts/AuthContext.tsx`: Global authentication state with login/logout/signup
-- `hooks/useLocalStorage.ts`: Custom hook that syncs React state with LocalStorage
+- `contexts/AuthContext.tsx`: Global authentication state with AWS Cognito (login/logout/signup/confirmSignUp/resetPassword/deleteAccount)
+- `hooks/useHybridData.ts`: Main data hook - switches between LocalStorage and DynamoDB based on auth state
+- `hooks/useSeasonData.ts`: Fetches season info from DynamoDB (publicApiKey, no auth required)
+- `hooks/useLocalStorageData.ts`: LocalStorage CRUD operations (guest mode)
+- `hooks/useDynamoDBData.ts`: DynamoDB CRUD operations (authenticated mode)
+- `hooks/useLocalStorage.ts`: Base hook for LocalStorage sync
 
 ### Business Logic
 - `utils/statistics.ts`: Functions for calculating match statistics
@@ -138,43 +148,46 @@ app/page.tsx (data owner)
 - `components/layout/`: Common layout (Header, Layout)
 - `components/ui/`: Reusable UI primitives (Button, Input, Select, RadioGroup)
 
-## AWS Amplify Integration (Future)
+## AWS Amplify Integration (Current Implementation)
 
-The backend is configured but **not yet integrated** into the frontend. When integrating:
+The app is fully integrated with AWS Amplify Gen2:
 
-### Authentication
-Replace `contexts/AuthContext.tsx` mock implementation with AWS Amplify Auth:
+### Authentication (`contexts/AuthContext.tsx`)
+Uses AWS Cognito via Amplify Auth:
 ```typescript
-import { signIn, signUp, signOut, getCurrentUser } from 'aws-amplify/auth';
+import { signIn, signUp, signOut, getCurrentUser, fetchAuthSession,
+         confirmSignUp, resetPassword, confirmResetPassword, deleteUser } from 'aws-amplify/auth';
 ```
 
-### Data Models
-Update `amplify/data/resource.ts` to define the schema matching `types/index.ts`:
-- User model
-- Deck model (with relationship to User)
-- MatchRecord model (with relationships to User and Deck)
+### Data Models (`amplify/data/resource.ts`)
+DynamoDB tables with owner-based authorization:
+- **Deck**: userId, className, deckName, createdAt
+- **MatchRecord**: userId, myDeckId, opponentClass, opponentDeckType, result, isFirst, playedAt, seasonId
+- **Season**: name, startDate, endDate, isCurrent
+- **AggregatedStats**: For public statistics (Lambda-generated)
 
-Change authorization from `publicApiKey()` to user-based auth:
-```typescript
-.authorization((allow) => [allow.owner()])
-```
-
-### Data Access
-Replace `useLocalStorage` in `app/page.tsx` with AWS Amplify Data client:
+### Data Access (`app/page.tsx`)
+Uses Amplify Data client for all CRUD operations:
 ```typescript
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '@/amplify/data/resource';
 
 const client = generateClient<Schema>();
 
-// Fetch decks
-const { data: decks } = await client.models.Deck.list();
+// Fetch user's decks
+const { data: decks } = await client.models.Deck.list({
+  filter: { userId: { eq: user.id } }
+});
 
-// Create deck
-await client.models.Deck.create({ className, deckName });
+// Create deck with optimistic UI
+await client.models.Deck.create({ userId, className, deckName, createdAt });
+
+// Delete with cascade (deck + related records)
+await client.models.Deck.delete({ id: deckId });
 ```
 
-**Important**: Only the data layer needs to change. UI components can remain unchanged.
+### Lambda Functions (`amplify/functions/`)
+- **aggregate-stats**: Aggregates all users' match data for public statistics (triggered by EventBridge)
 
 ## Code Style and Conventions
 
@@ -223,9 +236,9 @@ import { ClassType } from '@/types';
 
 ## Important Notes
 
-1. **Deck Deletion**: When deleting a deck via `handleDeleteDeck`, all associated match records are also deleted.
+1. **Deck Deletion**: When deleting a deck via `handleDeleteDeck`, all associated match records are also deleted from DynamoDB.
 
-2. **Current Deck Selection**: Users must select a deck before recording matches. This selection is persisted to LocalStorage.
+2. **Current Deck Selection**: Users must select a deck before recording matches.
 
 3. **Statistics Filtering**: Stats can be viewed for all decks or filtered to a specific deck using DeckFilter.
 
@@ -233,4 +246,13 @@ import { ClassType } from '@/types';
 
 5. **Responsive Design**: Match history and class stats have separate mobile/desktop components for optimal UX.
 
-6. **Data Persistence**: Currently all data is stored in browser LocalStorage. Data is lost if browser data is cleared. AWS Amplify integration will provide cloud persistence.
+6. **Hybrid Data Persistence**:
+   - Guest users: Data stored in LocalStorage (browser-only, lost if cleared)
+   - Logged-in users: Data stored in DynamoDB (cloud sync, cross-device access)
+   - Migration: LocalStorage data can be migrated to DynamoDB on login
+
+7. **Optimistic UI**: CRUD operations use optimistic updates for better UX - the UI updates immediately while the backend operation happens in the background.
+
+8. **Public Statistics**: The `/stats` page shows aggregated statistics from all users, accessible without authentication.
+
+9. **Season Data**: Season information is fetched from DynamoDB using `publicApiKey`, allowing guest users to have proper season context for their match records.

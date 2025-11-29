@@ -7,12 +7,13 @@ import { Footer } from './Footer';
 interface LayoutProps {
   children: React.ReactNode;
   currentDeck?: { className: string; deckName: string } | null;
+  isUsingLocalStorage?: boolean;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children, currentDeck }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, currentDeck, isUsingLocalStorage = false }) => {
   return (
     <div className="min-h-screen flex flex-col">
-      <Header currentDeck={currentDeck} />
+      <Header currentDeck={currentDeck} isUsingLocalStorage={isUsingLocalStorage} />
       <main className="flex-1 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 w-full">
         {children}
       </main>

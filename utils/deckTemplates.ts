@@ -34,8 +34,11 @@ export async function fetchDeckTemplates(
   }
 
   try {
-    // Seasonを取得
-    const { data: seasonData } = await client.models.Season.get({ id: seasonId });
+    // Seasonを取得（publicApiKeyで認証不要）
+    const { data: seasonData } = await client.models.Season.get(
+      { id: seasonId },
+      { authMode: 'apiKey' }
+    );
 
     if (!seasonData) {
       // Seasonが見つからない場合は空配列を返す

@@ -11,9 +11,10 @@ import { ClassType } from '@/types';
 
 interface HeaderProps {
   currentDeck?: { className: string; deckName: string } | null;
+  isUsingLocalStorage?: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
+export const Header: React.FC<HeaderProps> = ({ currentDeck, isUsingLocalStorage = false }) => {
   const { user, logout } = useAuth();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const userIsAdmin = isAdmin(user?.email);
@@ -75,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
               </>
             )}
 
-            {user && (
+            {user ? (
               <>
                 <span className="text-sm text-slate-400 hidden md:block">
                   {user.email}
@@ -94,6 +95,13 @@ export const Header: React.FC<HeaderProps> = ({ currentDeck }) => {
                   ログアウト
                 </Button>
               </>
+            ) : (
+              <Link
+                href="/auth"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-lg hover:from-violet-500 hover:to-fuchsia-500 transition-all duration-200 shadow-lg shadow-violet-900/20"
+              >
+                ログイン
+              </Link>
             )}
           </div>
         </div>
